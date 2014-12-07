@@ -9,6 +9,7 @@
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/GradProjectScala/.gradle/" />
     <ignored path="$PROJECT_DIR$/GradProjectScala/build/" />
+    <ignored path=".idea/dataSources.local.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -750,12 +751,12 @@
       <workItem from="1415605713944" duration="105000" />
       <workItem from="1415605873826" duration="1442000" />
       <workItem from="1416290913678" duration="1260000" />
-      <workItem from="1417972721789" duration="115000" />
+      <workItem from="1417972721789" duration="170000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2922000" />
+    <option name="totallyTimeSpent" value="2977000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
