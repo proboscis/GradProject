@@ -1,0 +1,9 @@
+/pylearn2
+/data
+/build
+/target
+# Java class files
+*.class
+# OSX files
+.DS_Store
+.gradle
