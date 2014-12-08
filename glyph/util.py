@@ -6,6 +6,7 @@ import theano
 import numpy
 from theano import tensor as T
 from itertools import islice
+import zipfile
 
 def loadMnistData(datasetPath):
     ''' Loads the dataset
@@ -170,6 +171,17 @@ def readAppend(filename, f):
     f(files[0], files[1])
     for f in files:
         f.close()
+
+def fileLines(fileName):
+    with open(fileName,'r') as f:
+        for line in f:
+            yield line
+
+def zipFileLines(zipName,fileName):
+    with zipfile.ZipFile(zipName) as z:
+        with z.open(fileName) as f:
+            for line in f:
+                yield line
 
 def save(obj,fileName):
     autoClose(fileName,'wb',lambda f:pickle.dump(obj,f))

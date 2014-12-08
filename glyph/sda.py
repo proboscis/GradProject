@@ -128,6 +128,8 @@ if __name__ == '__main__':
     sda = StackedDenoisingAutoencoder(numpyRng,hiddenLayerSizes=[1000,1000,1000])
     sda.preTrain()
     save(sda,'data/pre_trained_sda.pkl')
+
+
     # data = util.loadMnistData("mnist.pkl.gz")
     # batchSize = 20
     # preLearningRate = 0.1
