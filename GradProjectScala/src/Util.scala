@@ -5,6 +5,9 @@
 import java.io._
 import java.net.URL
 
+import net.coobird.thumbnailator.Thumbnails
+import net.coobird.thumbnailator.resizers.configurations.ScalingMode
+
 import scala.util.Try
 import scalaz._
 import Scalaz._
@@ -51,7 +54,10 @@ object Util{
 }
 
 object EBookDownloader{
-  def main(args: Array[String]) {
+  import Util._
+  def main(args: Array[String]): Unit = {
+    //downloadThumbnails()
+    resizeThumbnails()
   }
   def downloadThumbnails(): Unit ={
     val lines = scala.io.Source.fromFile("ebookdata/bookinfo.csv").getLines()
@@ -64,5 +70,27 @@ object EBookDownloader{
         (info("SKU")+"."+ext)->new URL(url)
     }
     Util.downloadAllAt("thumbnails")(_.length > 0)(thumbnails).zipWithIndex.foreach(println)
+  }
+  import java.awt.image.BufferedImage
+
+  def resizeThumbnails(): Unit ={
+    val thumbnails = new File("thumbnails").listFiles()
+    val folder = new File("resized")
+    folder.mkdirs()
+    thumbnails.iterator.parMap{
+      case file =>
+        val dst = new File("resized/"+file.getName)
+        if(!dst.exists) {
+          Thumbnails
+            .of(file)
+            .size(100, 100)
+            .keepAspectRatio(false)
+            .scalingMode(ScalingMode.BICUBIC)
+            .toFile(dst)
+          println("saving resized image:" + dst)
+        }else{
+          println("skip:"+dst)
+        }
+    }.foreach(identity)
   }
 }
