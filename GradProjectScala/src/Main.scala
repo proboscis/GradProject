@@ -6,7 +6,6 @@ import scala.sys.process._
 import scala.io.Source
 object Main{
   val ipython = "/usr/local/bin/ipython"
-
   def main(args: Array[String]) {
     implicit def stringIsFile(fn:String):File = new File(fn)
     def input(string:String) = new ByteArrayInputStream(Charset.forName("UTF-8").encode(string).array())
