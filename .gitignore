@@ -7,3 +7,8 @@
 # OSX files
 .DS_Store
 .gradle
+*.jpg
+*.ipr
+*.iws
+*.iml
+*.csv

@@ -52,6 +52,8 @@ object Util{
 
 object EBookDownloader{
   def main(args: Array[String]) {
+  }
+  def downloadThumbnails(): Unit ={
     val lines = scala.io.Source.fromFile("ebookdata/bookinfo.csv").getLines()
     val columnIndex = lines.next().split(",").zipWithIndex.toMap
     columnIndex.foreach(println)
