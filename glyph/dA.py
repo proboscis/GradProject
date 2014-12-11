@@ -75,3 +75,16 @@ class DenoisingAutoEncoder():
             for param,gparam in zip(self.params, gparams)
         ]
         return (cost,updates)
+
+    def saveLayerImage(self,filename,resolution=(100,100),tileShape=(10,10)):
+        try:
+            import PIL.Image as Image
+        except ImportError:
+            import Image
+        from utils import tile_raster_images
+
+        image = Image.fromarray(
+            tile_raster_images(X=self.W.get_value(borrow=True).T,
+                               img_shape=resolution, tile_shape=tileShape,
+                               tile_spacing=(1, 1)))
+        image.save('filename')

@@ -162,9 +162,9 @@ def window(seq, n=2):
         yield result
 
 def autoClose(filename, param, f):
-    print('autoclose')
+    # print('autoclose')
     file = open(filename, param)
-    print('file')
+    # print('file')
     result = f(file)
     file.close()
     return result

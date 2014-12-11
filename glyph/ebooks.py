@@ -64,7 +64,14 @@ if __name__ == '__main__':
         model.preTrain(data=x)
         return model
     print "start compilation and training..."
-    trainingTime,sda= checkTime(train)
+    trainingTime,sda = checkTime(train)
     print "training finished in ", trainingTime , " seconds"
     save(sda,'../data/pre_trained_sda_ebooks.pkl')
+    # sda = load('../data/pre_trained_sda_ebooks.pkl')
+    print("saving layer images...")
+    #TODO reimplement
+    for i,da in enumerate(sda.dALayers):
+        da.saveLayerImage(
+            "../data/ebooks/layer_%d.png" % i,
+            resolution=(100,100))
     print "program finish"
