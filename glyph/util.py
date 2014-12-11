@@ -8,7 +8,7 @@ from theano import tensor as T
 from itertools import islice
 import zipfile
 
-def loadMnistData(datasetPath):
+def loadMnistData(datasetPath="mnist.pkl.gz"):
     ''' Loads the dataset
 
     :type dataset: string
@@ -63,6 +63,10 @@ def loadMnistData(datasetPath):
         variable) would lead to a large decrease in performance.
         """
         data_x, data_y = data_xy
+        print "data info ======="
+        print data_x.shape,data_y.shape
+        print type(data_x),type(data_y)
+        print "end data info===="
         shared_x = theano.shared(numpy.asarray(data_x,
                                                dtype=theano.config.floatX),
                                  borrow=borrow)
@@ -85,6 +89,7 @@ def loadMnistData(datasetPath):
     rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
             (test_set_x, test_set_y)]
     return rval
+
 
 def validationResultString(model,epoch, batchIndex, loss):
     return 'epoch %i, minibatch %i/%i, validation error %f %%' % (
@@ -158,7 +163,7 @@ def window(seq, n=2):
 
 def autoClose(filename, param, f):
     print('autoclose')
-    file = open(os.path.expanduser(filename), param)
+    file = open(filename, param)
     print('file')
     result = f(file)
     file.close()
@@ -184,7 +189,18 @@ def zipFileLines(zipName,fileName):
                 yield line
 
 def save(obj,fileName):
+    from os import path,makedirs
+    parent = os.path.dirname(fileName)
+    if not path.exists(parent):
+        makedirs(parent)
     autoClose(fileName,'wb',lambda f:pickle.dump(obj,f))
 
 def load(fileName):
     autoClose(fileName,'rb',lambda f:pickle.load(f))
+
+def checkTime(f):
+    import time
+    start = time.time()
+    result = f()
+    end = time.time()
+    return (end-start),result

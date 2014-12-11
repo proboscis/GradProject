@@ -105,16 +105,17 @@ class StackedDenoisingAutoencoder:
         return trainer,validationScore,testScore
 
     def preTrain(self,
-                 data=glyph.util.loadMnistData("mnist.pkl.gz"),
+                 data#=glyph.util.loadMnistData("mnist.pkl.gz")[0][0]
+                 ,
                  batchSize=20,
                  preLearningRate=0.1,
                  corruptionLevels=(.1,.2,.3)):
         import numpy,glyph.util
-
-        preTrainer = self.pretrainingFunctions(data[0][0],batchSize=batchSize)
+        preTrainer = list(self.pretrainingFunctions(data,batchSize=batchSize))
+        assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
         for i,(trainer,corruptionLevel) in enumerate(zip(preTrainer,corruptionLevels)):
             for epoch in xrange(15):
-                trainScores = [trainer(batchIndex,corruptionLevel,preLearningRate) for batchIndex in xrange(data[0][0].get_value(borrow=True).shape[0]/batchSize)]
+                trainScores = [trainer(batchIndex,corruptionLevel,preLearningRate) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
                 print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),numpy.mean(trainScores)
 
 
@@ -125,6 +126,10 @@ if __name__ == '__main__':
 
 
     numpyRng = numpy.random.RandomState(89677)
+    # sda = StackedDenoisingAutoencoder(numpyRng,hiddenLayerSizes=[1000,1000,1000])
+    # sda.preTrain()
+    # save(sda,'data/pre_trained_sda.pkl')
+
     sda = StackedDenoisingAutoencoder(numpyRng,hiddenLayerSizes=[1000,1000,1000])
     sda.preTrain()
     save(sda,'data/pre_trained_sda.pkl')
