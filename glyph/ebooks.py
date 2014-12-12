@@ -58,9 +58,10 @@ if __name__ == '__main__':
         return theano.shared(numpy.asarray(data,dtype=theano.config.floatX).reshape(size,10000),borrow=True)
     gpuSendTime,x = checkTime(makeX)
     print "data transportation to gpu finished in ", gpuSendTime , " seconds"
+    hiddenLayerSizes = [2500,400,100]
     def train():
         numpyRng = numpy.random.RandomState(89677)
-        model = StackedDenoisingAutoencoder(numpyRng,nIn=100*100,hiddenLayerSizes=[3000,500,100])
+        model = StackedDenoisingAutoencoder(numpyRng,nIn=100*100,hiddenLayerSizes=hiddenLayerSizes)
         model.preTrain(data=x)
         return model
     print "start compilation and training..."
@@ -70,8 +71,10 @@ if __name__ == '__main__':
     # sda = load('../data/pre_trained_sda_ebooks.pkl')
     print("saving layer images...")
     #TODO reimplement
-    for i,da in enumerate(sda.dALayers):
+    import math
+    resolutions = [(100,100),(50,50),(20,20)]
+    for i,(da,res) in enumerate(zip(sda.dALayers,resolutions)):
         da.saveLayerImage(
             "../data/ebooks/layer_%d.png" % i,
-            resolution=(100,100))
+            resolution=res)
     print "program finish"
