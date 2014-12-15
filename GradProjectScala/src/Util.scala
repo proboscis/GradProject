@@ -56,7 +56,7 @@ object Util{
 object EBookDownloader{
   import Util._
   def main(args: Array[String]): Unit = {
-    //downloadThumbnails()
+    downloadThumbnails()
     resizeThumbnails()
   }
   def downloadThumbnails(): Unit ={
@@ -65,9 +65,16 @@ object EBookDownloader{
     columnIndex.foreach(println)
     val books = lines.map{line => columnIndex andThen line.split(",")}
     val thumbnails = books.map{
-      info => val url = info("サムネイル")+info("表示画像")
+      info => Try {
+        val url = info("サムネイル") + info("表示画像")
         val ext = url.split('.').last
-        (info("SKU")+"."+ext)->new URL(url)
+        (info("SKU") + "." + ext) -> new URL(url)
+      }
+    }.filter{
+      case util.Success(pair)=> true
+      case util.Failure(f)=> f.printStackTrace();false
+    }.map{
+      _.get
     }
     Util.downloadAllAt("thumbnails")(_.length > 0)(thumbnails).zipWithIndex.foreach(println)
   }
@@ -77,20 +84,24 @@ object EBookDownloader{
     val thumbnails = new File("thumbnails").listFiles()
     val folder = new File("resized")
     folder.mkdirs()
-    thumbnails.iterator.parMap{
+    thumbnails.iterator.foreach{
       case file =>
         val dst = new File("resized/"+file.getName)
         if(!dst.exists) {
-          Thumbnails
-            .of(file)
-            .size(100, 100)
-            .keepAspectRatio(false)
-            .scalingMode(ScalingMode.BICUBIC)
-            .toFile(dst)
+          try {
+            Thumbnails
+              .of(file)
+              .size(100, 100)
+              .keepAspectRatio(false)
+              .scalingMode(ScalingMode.BICUBIC)
+              .toFile(dst)
+          }catch{
+            case e:Throwable => e.printStackTrace()
+          }
           println("saving resized image:" + dst)
         }else{
           println("skip:"+dst)
         }
-    }.foreach(identity)
+    }
   }
 }

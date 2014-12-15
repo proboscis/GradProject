@@ -87,4 +87,6 @@ class DenoisingAutoEncoder():
             tile_raster_images(X=self.W.get_value(borrow=True).T,
                                img_shape=resolution, tile_shape=tileShape,
                                tile_spacing=(1, 1)))
-        image.save('filename')
+        import util
+        util.ensurePathExists(filename)
+        image.save(filename)

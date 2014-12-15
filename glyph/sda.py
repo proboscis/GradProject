@@ -2,11 +2,11 @@ __author__ = 'kentomasui'
 
 import theano
 from theano import tensor as T
-from glyph.layer import Layer
-from glyph.dA import DenoisingAutoEncoder
-from glyph.logistic_regression import LogisticRegression
-from glyph.util import load,save
-import glyph.util
+from layer import Layer
+from dA import DenoisingAutoEncoder
+from logistic_regression import LogisticRegression
+from util import load,save
+import util
 class StackedDenoisingAutoencoder:
     def __init__(self,
                  numpyRng,
@@ -17,7 +17,7 @@ class StackedDenoisingAutoencoder:
         self.nLayers = len(hiddenLayerSizes)
         if not theanoRng:
             theanoRng = theano.tensor.shared_randomstreams.RandomStreams(numpyRng.randint(2 ** 30))
-        self.x = T.dmatrix('x')
+        self.x = T.matrix('x')
         self.y = T.ivector('y')
         def makeSigmoidLayer(lastLayer,lastLayerSize,size):
             return Layer(rng=numpyRng,input=lastLayer,nIn=lastLayerSize,nOut=size,activation=T.nnet.sigmoid)
@@ -37,7 +37,10 @@ class StackedDenoisingAutoencoder:
                 yield (sigmoidLayer,daLayer)
                 for layer in makeLayers(sigmoidLayer.output,size,newList):
                     yield layer
-        self.sigmoidLayers,self.dALayers = zip(*makeLayers(self.x,nIn,hiddenLayerSizes))
+        self.sigmoidLayers,self.dALayers = zip(*makeLayers(self.x,nIn,reversed(hiddenLayerSizes)))
+        print "created sda with layer shapes below."
+        for da in self.dALayers:
+            print da.W.get_value().shape
         self.logLayer = LogisticRegression(self.sigmoidLayers[-1].output,hiddenLayerSizes[-1],nOut)
         self.params = [l.params for l in self.sigmoidLayers] + [self.logLayer.negativeLogLikelihood(self.y)]
         self.fineTuneCost = self.logLayer.negativeLogLikelihood(self.y)
@@ -110,11 +113,12 @@ class StackedDenoisingAutoencoder:
                  batchSize=20,
                  preLearningRate=0.1,
                  corruptionLevels=(.1,.2,.3)):
-        import numpy,glyph.util
+        import numpy,util
         preTrainer = list(self.pretrainingFunctions(data,batchSize=batchSize))
         assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
         for i,(trainer,corruptionLevel) in enumerate(zip(preTrainer,corruptionLevels)):
             for epoch in xrange(15):
+                print 'Pre-training layer %i, epoch %d start' % (i,epoch)
                 trainScores = [trainer(batchIndex,corruptionLevel,preLearningRate) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
                 print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),numpy.mean(trainScores)
 
@@ -132,6 +136,7 @@ if __name__ == '__main__':
 
     sda = StackedDenoisingAutoencoder(numpyRng,hiddenLayerSizes=[1000,1000,1000])
     sda.preTrain()
+
     save(sda,'data/pre_trained_sda.pkl')
 
 

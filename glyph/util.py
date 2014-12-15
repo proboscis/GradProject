@@ -2,13 +2,13 @@ __author__ = 'kentomasui'
 import os
 import gzip
 import cPickle as pickle
-import theano
 import numpy
 from theano import tensor as T
 from itertools import islice
 import zipfile
 
 def loadMnistData(datasetPath="mnist.pkl.gz"):
+    import theano
     ''' Loads the dataset
 
     :type dataset: string
@@ -162,12 +162,8 @@ def window(seq, n=2):
         yield result
 
 def autoClose(filename, param, f):
-    # print('autoclose')
-    file = open(filename, param)
-    # print('file')
-    result = f(file)
-    file.close()
-    return result
+    with open(filename, param) as F:
+        return f(F)
 
 
 def readAppend(filename, f):
@@ -188,15 +184,57 @@ def zipFileLines(zipName,fileName):
             for line in f:
                 yield line
 
-def save(obj,fileName):
+def ensurePathExists(fileName):
     from os import path,makedirs
     parent = os.path.dirname(fileName)
-    if not path.exists(parent):
+    if not path.exists(parent) and parent:
         makedirs(parent)
+
+def exists(fileName):
+    from os import path
+    if path.exists(fileName):
+        return True
+    else:
+        return False
+
+def fileMemo(f,path):
+    if exists(path):
+        print "loaded cache: " + path
+        cache = load(path)
+    else:
+        print "cannot find cache: "+path
+        cache = {}
+
+    def l(param):
+        key = frozenset(param.items())
+        print key
+        for pair in key:
+            print pair
+        if key in cache:
+            return cache[key]
+        else:
+            cache[key] = f(param)
+            save(cache,path)
+            return cache[key]
+
+    return l
+
+def loadOrCall(path,proc,force=False):
+    if exists(path) and not force:
+        print "use cache: " + path
+        return load(path)
+    else:
+        data = proc()
+        print "saved cache: " + path
+        save(data,path)
+        return data
+
+def save(obj,fileName):
+    ensurePathExists(fileName)
     autoClose(fileName,'wb',lambda f:pickle.dump(obj,f))
 
 def load(fileName):
-    autoClose(fileName,'rb',lambda f:pickle.load(f))
+    return autoClose(fileName,'rb',lambda f:pickle.load(f))
 
 def checkTime(f):
     import time
@@ -204,3 +242,22 @@ def checkTime(f):
     result = f()
     end = time.time()
     return (end-start),result
+
+if __name__ == '__main__':
+    from itertools import groupby
+    data = [1.1,2.1,3.1,4.1,5.1,1.2]
+    groups = groupby(data,lambda a:frozenset([a,a]))
+    for k,v in groups:
+        print k,v
+
+
+def makeImage(data,resolution,tileShape):
+    from utils import tile_raster_images
+    try:
+        import PIL.Image as Image
+    except ImportError:
+        import Image
+    return Image.fromarray(
+        tile_raster_images(X=data,
+                           img_shape=resolution, tile_shape=tileShape,
+                           tile_spacing=(1, 1)))
