@@ -62,7 +62,7 @@ class StackedDenoisingAutoencoder:
                 ],
                 outputs=cost,
                 updates=updates,
-                givens={self.x:trainSetX[batchBegin:batchEnd]}
+                givens={self.x:trainSetX[batchBegin:batchEnd]},
             )
             yield f
 
@@ -136,7 +136,6 @@ if __name__ == '__main__':
 
     sda = StackedDenoisingAutoencoder(numpyRng,hiddenLayerSizes=[1000,1000,1000])
     sda.preTrain()
-
     save(sda,'data/pre_trained_sda.pkl')
 
 

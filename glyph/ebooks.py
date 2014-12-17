@@ -38,8 +38,9 @@ def loadImages(folder):
     from os import listdir
     from scipy import misc
     from itertools import islice
-    import numpy,itertools
+    import numpy,itertools,random
     imgFiles = listdir(folder)
+    # random.shuffle(imgFiles)#destructive operation...
     images = (misc.imread(folder+"/"+imgFile).reshape(10000) for imgFile in imgFiles)
     size = len(imgFiles)/3
     print "required ram:%dMb" % (size * 10000 * 64 / 8 / 1024 / 1024)
@@ -92,7 +93,7 @@ def createSDA(params):
         model = StackedDenoisingAutoencoder(
             numpyRng,
             nIn=100*100,
-            hiddenLayerSizes=hiddenLayerSizes)
+        hiddenLayerSizes=hiddenLayerSizes)
         model.preTrain(data=x,corruptionLevels=corruptionLevels)
         return model
     print "start compilation and training..."
@@ -116,7 +117,7 @@ def compressImages(sda,images):
     from theano import tensor as T
     compress = theano.function(
         inputs = [sda.x],
-        outputs = sda.sigmoidLayers[-4].output)
+        outputs = sda.sigmoidLayers[-1].output)
     return compress(images)
 
 def clustering(data):
@@ -156,16 +157,24 @@ if __name__ == '__main__':
         result,size = loadImages("../gray")
         return compressImages(sda,result)
     compressed = util.loadOrCall("../data/compressed.pkl",l1)
+    # numpy.random.shuffle(compressed)#destructive
+    # image = util.makeImage(compressed,(50,50),(10,10))
+    # import matplotlib.pylab as plb
+    # plb.imshow(image)
+    # plb.show()
 
-    image = util.makeImage(numpy.random.shuffle(compressed),(50,50),(10,10))
-    import matplotlib.pylab as plb
-    plb.imshow(image)
-    plb.show()
+    import itertools
 
-    # import itertools
-    # groups = itertools.groupby(compressed,lambda a:frozenset(a))
+    # compressedTuples = map(tuple,compressed)
+    # sets = set(compressedTuples)
+    # for g in sets:
+    #     print g
+    #
+    # for vec in compressed:
+    #     print vec
+    # groups = itertools.groupby(compressed,lambda a:a)
     # for k,v in groups:
-    #     print "key:",len(k)
+    #      print "key:",k
     #saveSdaImages(sda,"../data/ebooks")
     #clustering(compressed)
 

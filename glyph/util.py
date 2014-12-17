@@ -261,3 +261,13 @@ def makeImage(data,resolution,tileShape):
         tile_raster_images(X=data,
                            img_shape=resolution, tile_shape=tileShape,
                            tile_spacing=(1, 1)))
+
+def run_command(command):
+    import subprocess
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    return iter(p.stdout.readline, b'')
+
+def writeFile(path,f):
+    autoClose(path,"w",f)
