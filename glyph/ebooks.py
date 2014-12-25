@@ -51,6 +51,7 @@ def loadImages(folder):
         result[i] = img
     return result,size
 
+
 def createSDA2(data,nIn,hiddenLayerSizes,corruptionLevels):
     print "start data transportation to gpu..."
     size = len(data)/nIn

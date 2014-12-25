@@ -26,6 +26,14 @@ object Util{
       out => Iterator.continually(in.read()).takeWhile(_ != -1).foreach(out.write)
     }
   }
+
+  def writeFile(string:String,dst:File) = {
+    dst.getParentFile.mkdirs()
+    using(new PrintWriter(new BufferedOutputStream(new FileOutputStream(dst)))){
+      out => out.write(string)
+    }
+  }
+
   def ensureDownload(validator:File=>Boolean)(dst:File,url:URL)=Try{
     validator(dst) ? () | save(url,dst)
   }

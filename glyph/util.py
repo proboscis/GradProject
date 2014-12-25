@@ -219,6 +219,16 @@ def fileMemo(f,path):
 
     return l
 
+def saveIfNotExist(path,f,force=False):
+    if exists(path) and not force:
+        return None
+    else:
+        data = f()
+        print "saved data: " + path
+        save(data,path)
+        return data
+
+
 def loadOrCall(path,proc,force=False):
     if exists(path) and not force:
         print "use cache: " + path
