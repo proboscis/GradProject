@@ -1,0 +1,19 @@
+{
+  "dst": "../models/mnist/s1000c0.3l0.0e100s1000c0.2l0.0e100s1000c0.1l0.0e100s10c0.1l0.0e100.pkl",
+  "dataSet": {
+    "kind": "mnist",
+    "path": "../data",
+    "shape": [28, 28]
+  },
+  "model": {
+    "preLearningRates": [0.01, 0.01, 0.01, 0.01],
+    "batchSize": 20,
+    "corruptionLevels": [0.3, 0.2, 0.1, 0.1],
+    "hiddenLayerSizes": [1000, 1000, 1000, 10],
+    "nIn": 784,
+    "randomSeed": 5789,
+    "pretrainingEpochs": [100, 100, 100, 100],
+    "kind": "sda",
+    "nOut": 10
+  }
+}

@@ -2,13 +2,19 @@
 /data
 /build
 /target
+/gray
+/resized
+/thumbnails
+/.idea
 # Java class files
 *.class
 # OSX files
 .DS_Store
 .gradle
-*.jpg
 *.ipr
 *.iws
 *.iml
 *.csv
+*.pyc
+*.pkl
+.pyc

@@ -7,7 +7,8 @@ def modelTable():
 
 def dataSetTable():
     return {
-        "ebook":createEbookDataSet
+        "ebook":createEbookDataSet,
+        "mnist":createMnistDataSet
     }
 
 def createModel(modelInfo):
@@ -22,16 +23,14 @@ def createSDA(modelInfo):
         nOut=modelInfo["nOut"]
     )
     corruptionLevels = modelInfo["corruptionLevels"]
-    #preLearningRates = modelInfo["preLearningRates"]
-    preLearningRate = 0.2
+    preLearningRates = modelInfo["preLearningRates"]
     batchSize = modelInfo["batchSize"]
     print "batchSize",batchSize
     def trainer(data):
         print "dataShape", data.get_value(borrow=True).shape
         preTrainer = list(model.pretrainingFunctions(data,batchSize=batchSize))
         assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
-        for i,(trainer,corruptionLevel) in enumerate(zip(preTrainer,corruptionLevels)):
-            print corruptionLevel,preLearningRate
+        for i,(trainer,corruptionLevel,preLearningRate) in enumerate(zip(preTrainer,corruptionLevels,preLearningRates)):
             for epoch in xrange(modelInfo["pretrainingEpochs"][i]):
                 print 'Pre-training layer %i, epoch %d start with learning rate of %f' % (i,epoch,preLearningRate)
                 trainScores = [trainer(batchIndex,corruptionLevel,preLearningRate) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
@@ -41,7 +40,6 @@ def createSDA(modelInfo):
 
 def createDataSet(dataSetInfo):
     return dataSetTable()[dataSetInfo["kind"]](dataSetInfo)
-
 
 def createEbookDataSet(info):
     folder = info["path"]
@@ -53,8 +51,8 @@ def createEbookDataSet(info):
     random.shuffle(imgFiles)#destructive operation... and makes operation so slow
     shape = info["shape"]
     print "shape",shape
-    size = info["shape"][0]
-    nInput = min(info["shape"][1],len(imgFiles))
+    size = shape[0] * shape[1]
+    nInput = min(info["numData"],len(imgFiles))
     images = (misc.imread(folder+"/"+imgFile).reshape(size) for imgFile in imgFiles)
     print "loading %d out of %d images" % (nInput , len(imgFiles))
     result = numpy.zeros((nInput,size),dtype=theano.config.floatX)
@@ -63,6 +61,10 @@ def createEbookDataSet(info):
             print "loading %dth image" % i
         result[i] = img
     return theano.shared(result.reshape(nInput,size),borrow=True)
+
+def createMnistDataSet(info):
+    data = util.loadMnistData()
+    return data[0][0] #train_set_x
 
 def train(info):
     dataSet = createDataSet(info["dataSet"])
@@ -76,5 +78,5 @@ if __name__ == '__main__':
     info = json.loads(sys.argv[1])
     dst = info["dst"]
     def l():
-        return train(info)
-    model = util.loadOrCall(dst,l)
+        return info,train(info)
+    model = util.saveIfNotExist(dst,l)
