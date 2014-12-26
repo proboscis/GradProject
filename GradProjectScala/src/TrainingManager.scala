@@ -99,23 +99,23 @@ object ParamsUtil{
 object EbookTrainingParams{
   import ParamsUtil._
   val firstLayers = for{
-    nEpoch <- Seq(100)
+    nEpoch <- Seq(1000,100,10)
     learningRate<- Seq(0.01)
     size <- Seq(20000,30000)
-    corruption <- Seq(0.2)
+    corruption <- Seq(0)
   } yield Layer(size,corruption,learningRate,nEpoch)
 
   val secondLayers = for{
     nEpoch <- Seq(45)
     learningRate<- Seq(0.01)
-    size <- Seq(1000,10000,20000)
-    corruption <- Seq(0.1)
+    size <- Seq(10000)
+    corruption <- Seq(0)
   } yield Layer(size,corruption,learningRate,nEpoch)
 
   val lastLayers = for{
-    nEpoch <- Seq(100)
+    nEpoch <- Seq(45)
     learningRate<- Seq(0.01)
-    corruption <- Seq(0d)
+    corruption <- Seq(0)
   } yield Layer(10,corruption,learningRate,nEpoch)
 
   val params = for {
@@ -180,13 +180,13 @@ object TrainingManager {
 //    Process(Seq("python","train.py",param.toJson.prettyPrint),"../glyph/").lineStream_!.foreach(println)
     for(p <- EbookTrainingParams.params){
       println(p.toJson.prettyPrint)
-      //Util.writeFile(p.toJson.prettyPrint,new File("../params/"+p.toFileName+".json"))
-
+      Util.writeFile(p.toJson.prettyPrint,new File("../params/"+p.toFileName+".json"))
 
       train(p) match {
         case Success(str) => println("leaning done!")
         case Failure(e) => e.printStackTrace()
       }
+
     }
   }
 }

@@ -5,6 +5,7 @@
 /gray
 /resized
 /thumbnails
+/models
 /.idea
 # Java class files
 *.class

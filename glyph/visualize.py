@@ -20,12 +20,11 @@ def loadRandomImages(folder,number,resolution):
     imgFiles = listdir(folder)
     size = min(len(imgFiles),number)
     random.shuffle(imgFiles)
-    linear = resolution[0] * resolution[1]
+    shape = misc.imread(folder+"/"+imgFiles[0]).shape
+    linear = shape[0]*shape[1]
+    #linear = resolution[0] * resolution[1]
     # random.shuffle(imgFiles)#destructive operation...
     print "imgShape",linear
-    def loadImage(path):
-        img = misc.imread(path)
-        return img
     images = (misc.imread(folder+"/"+imgFile).reshape(linear) for imgFile in imgFiles)
     result = numpy.zeros((size,linear),dtype=theano.config.floatX)
     for i,img in enumerate(islice(images,size)):
