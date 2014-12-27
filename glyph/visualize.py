@@ -13,6 +13,7 @@ def compressImages(sda,images,i):
     return compress(images)
 
 def loadRandomImages(folder,number,resolution):
+    print "loadRandomImages at:" + folder
     from os import listdir
     from scipy import misc
     from itertools import islice
@@ -36,7 +37,7 @@ def loadRandomImages(folder,number,resolution):
 def smallestSquare(area):
     import math
     sq = int(math.sqrt(area))
-    numbers = (i for i in xrange(1,sq)
+    numbers = (i for i in xrange(1,sq+1)
                if area % i == 0)
     l = max(numbers)
     return l, area/l
@@ -88,6 +89,14 @@ def reconstructor(sda):
         outputs=reconstructed
     )
 
+def reconstructors(sda):
+    for layer in sda.dALayers:
+        reconstructed = layer.reconstructedInput(layer.hiddenValues(sda.x))
+        yield theano.function(
+            inputs=[sda.x],
+            outputs = reconstructed
+        )
+
 def printDict(d):
     if type(d) == dict:
         for k,v in d.iteritems():
@@ -131,6 +140,22 @@ def convertModelDataToImages(path):
     reconImage.save(folder + "/reconstructed.png")
     #save learned features as an image
     sda.dALayers[0].saveLayerImage(folder + "/layer_weight.png",info["dataSet"]["shape"],(10,10))
+
+def createSdaImages(sda,inputs):
+    #layer activations
+    for i,comp in enumerate(genCompressors(sda)):
+        compressed = comp(inputs)
+        img = makeImageOfData(compressed)
+        name ="layer%d.png" % i
+        yield name,img
+    #reconstructed image TODO
+    # for i,recon in enumerate(reconstructors(sda)):
+    #     yield ("reconstructed%d.png"%i), makeImageOfData(recon(inputs))
+    yield "reconstructed.png",makeImageOfData(reconstructor(sda)(inputs))
+    #layer weights
+    for i,layer in enumerate(sda.dALayers):
+        yield ("weight%d.png" % i) , layer.genLayerImage(dataResolution(layer.W.get_value(borrow=True).T),(10,10))
+
 
 if __name__ == '__main__':
     import os

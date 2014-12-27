@@ -148,16 +148,16 @@ def clustering(data):
 
 if __name__ == '__main__':
     #loadImage("../resized/60000000.jpg")
-    #convert2GrayAll("../resized","../gray")
-    genSDA = util.fileMemo(createSDA,"../data/pre_trained_sda_ebooks.pkl")
-    sda = genSDA({
-        "hiddenLayerSizes":(2500, 400, 100,10),
-        "corruptionLevels":(0.3,0.2,0.1,0.1)
-    })
-    def l1():
-        result,size = loadImages("../gray")
-        return compressImages(sda,result)
-    compressed = util.loadOrCall("../data/compressed.pkl",l1)
+    convert2GrayAll("../resized/comics/28x28","../gray/comics/28x28")
+    # genSDA = util.fileMemo(createSDA,"../data/pre_trained_sda_ebooks.pkl")
+    # sda = genSDA({
+    #     "hiddenLayerSizes":(2500, 400, 100,10),
+    #     "corruptionLevels":(0.3,0.2,0.1,0.1)
+    # })
+    # def l1():
+    #     result,size = loadImages("../gray")
+    #     return compressImages(sda,result)
+    # compressed = util.loadOrCall("../data/compressed.pkl",l1)
     # numpy.random.shuffle(compressed)#destructive
     # image = util.makeImage(compressed,(50,50),(10,10))
     # import matplotlib.pylab as plb

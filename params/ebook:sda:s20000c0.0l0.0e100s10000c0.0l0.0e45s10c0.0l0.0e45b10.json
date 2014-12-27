@@ -1,0 +1,20 @@
+{
+  "dst": "../models/ebooks/s20000c0.0l0.0e100s10000c0.0l0.0e45s10c0.0l0.0e45.pkl",
+  "dataSet": {
+    "kind": "ebook",
+    "path": "../gray",
+    "shape": [100, 100],
+    "numData": 10000
+  },
+  "model": {
+    "preLearningRates": [0.01, 0.01, 0.01],
+    "batchSize": 10,
+    "corruptionLevels": [0.0, 0.0, 0.0],
+    "hiddenLayerSizes": [20000, 10000, 10],
+    "nIn": 10000,
+    "randomSeed": 5789,
+    "pretrainingEpochs": [100, 45, 45],
+    "kind": "sda",
+    "nOut": 10
+  }
+}

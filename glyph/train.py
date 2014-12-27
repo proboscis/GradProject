@@ -11,10 +11,10 @@ def dataSetTable():
         "mnist":createMnistDataSet
     }
 
-def createModel(info):
-    return modelTable()[info["model"]["kind"]](info)
+def createModel(info,trainset):
+    return modelTable()[info["model"]["kind"]](info,trainset)
 
-def createSDA(info):
+def createSDA(info,trainset):
     modelInfo = info["model"]
     from sda import StackedDenoisingAutoencoder
     visualize = modelInfo.get("visualize",True)
@@ -28,17 +28,25 @@ def createSDA(info):
     preLearningRates = modelInfo["preLearningRates"]
     batchSize = modelInfo["batchSize"]
     print "batchSize",batchSize
+    def ensureSaveImage(img,dst):
+        util.ensurePathExists(dst)
+        img.save(dst)
     if visualize:
+        #save input image
         import visualize
-        from matplotlib import pyplot as plt
-        import matplotlib.cm as cm
-        compressors = list(visualize.genCompressors(model))
-        inputs,size = visualize.loadRandomImages("../gray",100,None)
-        plots = {}
-        plt.ion()
+        print type(trainset)
+        print trainset.shape
+        img = visualize.makeImageOfData(trainset.get_value(borrow=True))
+        dst = info["dst"].replace("pkl","")+"/inputs.png"
+        ensureSaveImage(img,dst)
 
     def trainer(data):
-        print "dataShape", data.get_value(borrow=True).shape
+        print "training dataShape", data.get_value(borrow=True).shape
+        if visualize:
+            trainSet = data.get_value(borrow=True)
+            trainSetImg = visualize.makeImageOfData(trainSet)
+            dst = info["dst"].replace("pkl","")+"/train_set.png"
+            ensureSaveImage(trainSetImg,dst)
         preTrainer = list(model.pretrainingFunctions(data,batchSize=batchSize))
         assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
         for i,(trainer,corruptionLevel,preLearningRate) in enumerate(zip(preTrainer,corruptionLevels,preLearningRates)):
@@ -47,37 +55,10 @@ def createSDA(info):
                 trainScores = [trainer(batchIndex,corruptionLevel,preLearningRate) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
                 print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),numpy.mean(trainScores)
                 if visualize:
-                    compressed = map(lambda f:f(inputs),compressors)
-                    images = map(visualize.makeImageOfData,compressed)
-                    for j,img in enumerate(images):
-                        dst = info["dst"]+"/epoch%dlayer%d.png" % (epoch,j)
-                        util.ensurePathExists(dst)
-                        img.save(dst)
-                    #
-                    # plt.figure(0)
-                    # if 0 not in plots.keys():
-                    #     print "show image!"
-                    #     plots[0] = plt.imshow(images[0], cmap = cm.Greys_r,interpolation='nearest')
-                    # print "set data for figure %d" % 0
-                    # print "number of images %d" % len(images)
-                    # plots[0].set_data(images[0])
-                    #
-                    # print "update figure %d" % 0
-                    # plt.draw()
+                    for name,img in visualize.createSdaImages(model,trainset.get_value(borrow=True)):
+                        dst = info["dst"].replace("pkl","")+"/layer%depoch%d/" % (i,epoch) + name
+                        ensureSaveImage(img,dst)
 
-                    # for j,img in enumerate(images):
-                    #     plt.figure(j)
-                    #     plt.ion()
-                    #     if j not in plots.keys():
-                    #         plots[j] = plt.imshow(img, cmap = cm.Greys_r,interpolation='nearest')
-                    #         #plt.show()
-                    #     print "set data for figure %d" % j
-                    #     plots[j].set_data(img)
-                    #
-                    #     print "update figure %d" %j
-                    #     plt.draw()
-                        #so, how dows this end up?
-                    #show the activation of each layers.
 
     return model,trainer
     #return something
@@ -112,7 +93,7 @@ def createMnistDataSet(info):
 
 def train(info):
     dataSet = createDataSet(info["dataSet"])
-    model,train = createModel(info)
+    model,train = createModel(info,dataSet)
     train(dataSet)
     return model
 

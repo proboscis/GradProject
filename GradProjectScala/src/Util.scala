@@ -6,6 +6,7 @@ import java.io._
 import java.net.URL
 
 import net.coobird.thumbnailator.Thumbnails
+import net.coobird.thumbnailator.filters.ImageFilter
 import net.coobird.thumbnailator.resizers.configurations.ScalingMode
 
 import scala.util.Try
@@ -97,14 +98,38 @@ object Util{
 object EBookDownloader{
   import Util._
   def main(args: Array[String]): Unit = {
-    downloadThumbnails()
-    resizeThumbnails()
+    //downloadThumbnails()
+    //resizeThumbnails(28,28)(new File("thumbnails"),new File("resized/28x28"))
+    val thumbnailsDir = "thumbnails"
+    val comicsDir = "filtered/comics"
+    val resizedDir = "resized/comics/28x28"
+    copyFilteredThumbnailsTo(comicFilter)(thumbnailsDir,comicsDir)
+    resizeThumbnails(28,28)(new File(comicsDir),new File(resizedDir))
   }
-  def downloadThumbnails(): Unit ={
+
+  import org.apache.commons.io.FileUtils._
+
+  def copyFilteredThumbnailsTo(filter:Map[String,String]=>Boolean)(srcDir:String,dstDir:String): Unit ={
+    new File(dstDir).mkdirs()
+    println("copying to ",dstDir)
+    books.filter(filter).foreach{
+      book =>
+        copyFile(
+          new File(srcDir+"/"+book("SKU")+".jpg"),
+          new File(dstDir+"/"+book("SKU")+".jpg")
+          )
+    }
+    println("copy done")
+  }
+
+  def comics = books.filter(comicFilter)
+  def comicFilter:String Map String => Boolean = _("大ジャンル").contains("コミック")
+  def books = {
     val lines = scala.io.Source.fromFile("ebookdata/bookinfo.csv").getLines()
     val columnIndex = lines.next().split(",").zipWithIndex.toMap
-    columnIndex.foreach(println)
-    val books = lines.map{line => columnIndex andThen line.split(",")}
+    lines.map{line => columnIndex.mapValues(line.split(",").orElse{case _=>"null"})}
+  }
+  def downloadThumbnails(): Unit ={
     val thumbnails = books.map{
       info => Try {
         val url = info("サムネイル") + info("表示画像")
@@ -119,20 +144,39 @@ object EBookDownloader{
     }
     Util.downloadAllAt("thumbnails")(_.length > 0)(thumbnails).zipWithIndex.foreach(println)
   }
-  import java.awt.image.BufferedImage
 
-  def resizeThumbnails(): Unit ={
-    val thumbnails = new File("thumbnails").listFiles()
-    val folder = new File("resized")
+  def resizeAndSave(size:(Int,Int))(src:File,dst:File): Unit ={
+    if(!dst.exists) {
+      try {
+        Thumbnails
+          .of(src)
+          .size(size._1,size._2)
+          .keepAspectRatio(false)
+          .scalingMode(ScalingMode.BICUBIC)
+          .toFile(dst)
+      }catch{
+        case e:Throwable => e.printStackTrace()
+      }
+      println("saving resized image:" + dst)
+    }else{
+      println("skip:"+dst)
+    }
+  }
+
+  def resizeThumbnails(w:Int,h:Int)(src:File,dst:File): Unit ={
+//    val thumbnails = new File("thumbnails").listFiles()
+//    val folder = new File("resized")
+    val thumbnails = src.listFiles()
+    val folder = dst
     folder.mkdirs()
     thumbnails.iterator.foreach{
       case file =>
-        val dst = new File("resized/"+file.getName)
+        val dst = new File(folder.getPath+"/"+file.getName)
         if(!dst.exists) {
           try {
             Thumbnails
               .of(file)
-              .size(100, 100)
+              .size(w,h)
               .keepAspectRatio(false)
               .scalingMode(ScalingMode.BICUBIC)
               .toFile(dst)

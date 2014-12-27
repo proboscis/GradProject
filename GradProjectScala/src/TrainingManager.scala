@@ -30,15 +30,15 @@ case class SDA(kind:String ,
                batchSize:Int,
                pretrainingEpochs:Seq[Int]) extends Model{
   override def toFileName: String ="sda:"+(for((((a,b),c),d) <- hiddenLayerSizes.zip(corruptionLevels).zip(preLearningRates).zip(pretrainingEpochs))
-  yield Layer (a,b,c,d).toFileName).mkString
+  yield Layer (a,b,c,d).toFileName).mkString + "b%d".format(batchSize)
 }
 
 case class Layer(size:Int,corruption:Double,learningRate:Double,epochs:Int){
   def toFileName:String = """s%dc%.1fl%.1fe%d""".format(size,corruption,learningRate,epochs)
 }
 
-case class Param(dst:String,dataSet:DataSet,model:Model){
-  def toFileName:String = dataSet.toFileName+":"+model.toFileName
+case class Param(dst:String,dataSet:DataSet,model:Model,opt:Option[String]=None){
+  def toFileName:String = (opt getOrElse "")+":" + dataSet.toFileName+":"+model.toFileName
 }
 object Protocols extends DefaultJsonProtocol{
   implicit val ebookDataFormat = jsonFormat4(EbookData.apply)
@@ -62,7 +62,7 @@ object Protocols extends DefaultJsonProtocol{
   }
   import scalaz._
   import Scalaz._
-  implicit val paramFormat = jsonFormat3(Param.apply)
+  implicit val paramFormat = jsonFormat4(Param.apply)
   val ebookTest = EbookData("ebook","path should be here",(100,100),100)
   val mnistTest = Mnist("minst","path should be here", (28,28),100)
   val sdaTest = SDA("kind should be here", 1234,28*28,10,Seq(1),Seq(0.4),Seq(0.2),20,Seq(15))
@@ -74,41 +74,40 @@ object Protocols extends DefaultJsonProtocol{
   }
 }
 object ParamsUtil{
-  def layersToSDA(nIn:Int,layers:Seq[Layer]):SDA =
-    SDA("sda",5789,nIn,10,
+  def layersToSDA(nIn:Int,layers:Seq[Layer],batchSize:Int):SDA =
+    SDA("sda",1234,nIn,10,
       layers.map(_.size),
       layers.map(_.corruption),
       layers.map(_.learningRate),
-      20,
+      batchSize,
       layers.map(_.epochs))
 
 
-  def layersToParam(layers:Seq[Layer]):Param ={
-    val dst = "../models/ebooks/"+layers.map(_.toFileName).mkString+".pkl"
-    Param(dst,
-      EbookData("ebook","../gray",(100,100),10000),
-      SDA("sda",5789,10000,10,
-        layers.map(_.size),
-        layers.map(_.corruption),
-        layers.map(_.learningRate),
-        20,
-        layers.map(_.epochs))
-    )
+  def layersToParam(layers:Seq[Layer],batchSize:Int):Param ={
+    val ebooks = EbookData("ebook","../gray/28x28",(28,28),10000)
+    val sda = SDA("sda",1234,28*28,10,
+      layers.map(_.size),
+      layers.map(_.corruption),
+      layers.map(_.learningRate),
+      batchSize,
+      layers.map(_.epochs))
+    val dst = "../models/ebooks/"+layers.map(_.toFileName).mkString+"b"+sda.batchSize+".pkl"
+    Param(dst,ebooks,sda)
   }
 }
 object EbookTrainingParams{
   import ParamsUtil._
   val firstLayers = for{
-    nEpoch <- Seq(1000,100,10)
+    nEpoch <- Seq(100,100,10)
     learningRate<- Seq(0.01)
-    size <- Seq(20000,30000)
+    size <- Seq(1000)
     corruption <- Seq(0)
   } yield Layer(size,corruption,learningRate,nEpoch)
 
   val secondLayers = for{
     nEpoch <- Seq(45)
     learningRate<- Seq(0.01)
-    size <- Seq(10000)
+    size <- Seq(1000)
     corruption <- Seq(0)
   } yield Layer(size,corruption,learningRate,nEpoch)
 
@@ -122,7 +121,15 @@ object EbookTrainingParams{
     first <- firstLayers
     second <- secondLayers
     last <- lastLayers
-  } yield layersToParam(Seq(first,second,last))
+    batch<- Seq(1,10,20)
+  } yield layersToParam(Seq(first,second,last),batch)
+  val comicParams = MnistTrainingParams.params.map{
+    case p => p.copy(
+      dst=p.dst.replace("mnist","ebookComic"),
+      dataSet=EbookData("ebook","../gray/comics/28x28",(28,28),40000),
+      opt=Some("comic")
+    )
+  }
 }
 
 object MnistTrainingParams{
@@ -155,10 +162,11 @@ object MnistTrainingParams{
     third <- thirdLayers
     last <- lastLayers
   }yield{
+    val mnist = Mnist("mnist","../data",(28,28),40000)
+    val sda = layersToSDA(28*28,Seq(first,second,third,last),20)
     Param(
-      "../models/mnist/"+Seq(first,second,third,last).map(_.toFileName).mkString + ".pkl",
-      Mnist("mnist","../data",(28,28),40000),
-      layersToSDA(28*28,Seq(first,second,third,last)))
+      "../models/mnist/"+Seq(first,second,third,last).map(_.toFileName).mkString+"b" + sda.batchSize + ".pkl",
+      mnist,sda)
   }
   
 }
@@ -178,14 +186,19 @@ object TrainingManager {
 //    val param = Param(dst,dataSet,sda)
 //    println(param.toJson.prettyPrint)
 //    Process(Seq("python","train.py",param.toJson.prettyPrint),"../glyph/").lineStream_!.foreach(println)
-    for(p <- EbookTrainingParams.params){
+    for(p <-
+        EbookTrainingParams.params ++
+          MnistTrainingParams.params ++
+          EbookTrainingParams.comicParams){
       println(p.toJson.prettyPrint)
       Util.writeFile(p.toJson.prettyPrint,new File("../params/"+p.toFileName+".json"))
 
+      /*
       train(p) match {
         case Success(str) => println("leaning done!")
         case Failure(e) => e.printStackTrace()
       }
+      */
 
     }
   }
