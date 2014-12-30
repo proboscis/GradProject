@@ -7,7 +7,8 @@ def modelTable():
 
 def dataSetTable():
     return {
-        "ebook":createEbookDataSet,
+        "ebook":createMnistDataSet,
+        #"ebook":createEbookDataSet,
         "mnist":createMnistDataSet
     }
 
@@ -74,6 +75,7 @@ def createEbookDataSet(info):
     import random, theano
     imgFiles = listdir(folder)
     random.shuffle(imgFiles)#destructive operation... and makes operation so slow
+    #was it because of shuffle!?
     shape = info["shape"]
     print "shape",shape
     size = shape[0] * shape[1]
@@ -84,8 +86,10 @@ def createEbookDataSet(info):
     for i,img in enumerate(islice(images,nInput)):
         if i % 1000 == 0:
             print "loading %dth image" % i
-        result[i] = img
-    return theano.shared(result.reshape(nInput,size),borrow=True)
+        result[i] = img / 255.0
+    return theano.shared(numpy.asarray(result.reshape(nInput,size),
+                         dtype=theano.config.floatX),
+                         borrow=True)
 
 def createMnistDataSet(info):
     data = util.loadMnistData()
@@ -97,10 +101,13 @@ def train(info):
     train(dataSet)
     return model
 
-if __name__ == '__main__':
-    import sys,json
-    info = json.loads(sys.argv[1])
+def evalModel(jsonObj):
+    info = jsonObj
     dst = info["dst"]
     def l():
         return info,train(info)
     model = util.saveIfNotExist(dst,l)
+
+if __name__ == '__main__':
+    import sys,json
+    evalModel(json.loads(sys.argv[1]))

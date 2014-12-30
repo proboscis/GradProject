@@ -15,6 +15,7 @@ object Main{
     //Process("python glyph/Main.py","../").lineStream.foreach(println)
     """pwd""" !
 
+
     Process(Seq("python","ebooks.py"),"../glyph/")
       .lineStream_!.foreach(println)
     //val pathLine = """printenv""".lineStream_!.find(_.startsWith("PATH")).get
