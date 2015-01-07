@@ -9,6 +9,7 @@ import net.coobird.thumbnailator.Thumbnails
 import net.coobird.thumbnailator.filters.ImageFilter
 import net.coobird.thumbnailator.resizers.configurations.ScalingMode
 
+import scala.language.implicitConversions
 import scala.util.Try
 import scalaz._
 import Scalaz._
@@ -98,13 +99,14 @@ object Util{
 object EBookDownloader{
   import Util._
   def main(args: Array[String]): Unit = {
+    implicit def stringIsFile(str:String):File = new File(str)
+    val thumbnailsDir = "../thumbnails"
     //downloadThumbnails()
     //resizeThumbnails(28,28)(new File("thumbnails"),new File("resized/28x28"))
-    val thumbnailsDir = "thumbnails"
-    val comicsDir = "filtered/comics"
-    val resizedDir = "resized/comics/28x28"
-    copyFilteredThumbnailsTo(comicFilter)(thumbnailsDir,comicsDir)
-    resizeThumbnails(28,28)(new File(comicsDir),new File(resizedDir))
+    resizeThumbnails(100,100)(thumbnailsDir,"../resized/100x100")
+    //copyFilteredThumbnailsTo(comicFilter)(thumbnailsDir,"filtered/comics")
+    //resizeThumbnails(28,28)("filtered/comics","resized/comics/28x28")
+    resizeThumbnails(100,100)("../filtered/comics","../resized/comics/100x100")
   }
 
   import org.apache.commons.io.FileUtils._
@@ -125,7 +127,7 @@ object EBookDownloader{
   def comics = books.filter(comicFilter)
   def comicFilter:String Map String => Boolean = _("大ジャンル").contains("コミック")
   def books = {
-    val lines = scala.io.Source.fromFile("ebookdata/bookinfo.csv").getLines()
+    val lines = scala.io.Source.fromFile("../ebookdata/bookinfo.csv").getLines()
     val columnIndex = lines.next().split(",").zipWithIndex.toMap
     lines.map{line => columnIndex.mapValues(line.split(",").orElse{case _=>"null"})}
   }

@@ -121,34 +121,13 @@ def compressImages(sda,images):
         outputs = sda.sigmoidLayers[-1].output)
     return compress(images)
 
-def clustering(data):
-    from sklearn.cluster import KMeans
-    kmeans = KMeans()
-    kmeans.fit(data)
-    labels = kmeans.labels_
-    uniqueLabels = numpy.unique(labels)
-    nCluster = len(uniqueLabels)
-    centers = kmeans.cluster_centers_
-    import matplotlib.pyplot as plt
-    from itertools import cycle
-    colors = cycle('bgrcmykbgrcmykbgrcmykbgrcmyk')
-    plt.figure(1)
-    plt.clf()
-    for center in centers:
-        print center
-    for k,col in zip(range(nCluster),colors):
-        members = labels == k
-        center = centers[k]
-        plt.plot(data[members,0],data[members,1],col +'.')
-        plt.plot(center[0],center[1],'o',markerfacecolor=col,
-                 markeredgecolor = 'k',markersize = 14)
-    plt.title("clusters")
-    plt.show()
+
 
 
 if __name__ == '__main__':
     #loadImage("../resized/60000000.jpg")
-    convert2GrayAll("../resized/comics/28x28","../gray/comics/28x28")
+    #convert2GrayAll("../resized/comics/28x28","../gray/comics/28x28")
+    #convert2GrayAll("../resized/28x28","../gray/28x28")
     # genSDA = util.fileMemo(createSDA,"../data/pre_trained_sda_ebooks.pkl")
     # sda = genSDA({
     #     "hiddenLayerSizes":(2500, 400, 100,10),

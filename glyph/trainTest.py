@@ -1,7 +1,11 @@
 import train,util,json
 if __name__ == '__main__':
+    import sys
     print "trainTest!"
-    jsonLines = util.fileLines("../params/mnistImage:sda:s1000c0.3l0.0e100s1000c0.2l0.0e100s1000c0.1l0.0e100s10c0.1l0.0e100b20.json")
+    #file = "/home/kento/Documents/GradProject/params/ebook_color_sda1.json"
+    file = sys.argv[1]
+    print "loading file:",file
+    jsonLines = util.fileLines(file)
     jsonStr = reduce(lambda a,b: a + b,jsonLines)
     info = json.loads(jsonStr)
     # ebook = train.createEbookDataSet(info["dataSet"]).get_value(borrow=True)

@@ -7,13 +7,19 @@ def modelTable():
 
 def dataSetTable():
     return {
-        "ebook":createMnistDataSet,
-        #"ebook":createEbookDataSet,
+        #"ebook":createMnistDataSet,
+        "ebook":createEbookDataSet,
         "mnist":createMnistDataSet
     }
 
 def createModel(info,trainset):
     return modelTable()[info["model"]["kind"]](info,trainset)
+
+def createPCA(info,trainset):
+    import sklearn
+    from sklearn.decomposition import PCA
+    pca = PCA(n_components=10)
+    return pca , pca.fit
 
 def createSDA(info,trainset):
     modelInfo = info["model"]
@@ -72,15 +78,19 @@ def createEbookDataSet(info):
     from os import listdir
     from scipy import misc
     from itertools import islice
-    import random, theano
+    import theano
     imgFiles = listdir(folder)
-    random.shuffle(imgFiles)#destructive operation... and makes operation so slow
-    #was it because of shuffle!?
     shape = info["shape"]
-    print "shape",shape
-    size = shape[0] * shape[1]
+    print "createDataSet() shape",shape
+    size = reduce(lambda a,b: a*b,shape)
+    print "estimated size:",size
     nInput = min(info["numData"],len(imgFiles))
-    images = (misc.imread(folder+"/"+imgFile).reshape(size) for imgFile in imgFiles)
+    def imageGen():
+        for imgFile in imgFiles:
+            img = misc.imread(folder + "/" + imgFile)
+            #print "loaded image shape:",img.shape
+            yield img.reshape(size)
+    images = imageGen()
     print "loading %d out of %d images" % (nInput , len(imgFiles))
     result = numpy.zeros((nInput,size),dtype=theano.config.floatX)
     for i,img in enumerate(islice(images,nInput)):

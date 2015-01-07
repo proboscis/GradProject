@@ -59,12 +59,14 @@ def dataResolution(data):
         size = data.get_value(borrow=True).shape[1]
         return smallestSquare(size)
 
-def makeImageOfData(data):
+def makeImageOfData(data,resolution=None):
     import numpy
     shape = data.shape
     res = dataResolution(data)
     print shape,res
-    return util.makeImage(data,dataResolution(data),(10,10))
+    if resolution is None:
+        resolution = dataResolution(data)
+    return util.makeImage(data,resolution,(10,10))
 
 def findModels():
     import os , os.path
@@ -141,7 +143,7 @@ def convertModelDataToImages(path):
     #save learned features as an image
     sda.dALayers[0].saveLayerImage(folder + "/layer_weight.png",info["dataSet"]["shape"],(10,10))
 
-def createSdaImages(sda,inputs):
+def createSdaImages(sda,inputs,color=False):
     #layer activations
     for i,comp in enumerate(genCompressors(sda)):
         compressed = comp(inputs)
@@ -153,18 +155,44 @@ def createSdaImages(sda,inputs):
     #     yield ("reconstructed%d.png"%i), makeImageOfData(recon(inputs))
     yield "reconstructed.png",makeImageOfData(reconstructor(sda)(inputs))
     #layer weights
-    for i,layer in enumerate(sda.dALayers):
-        yield ("weight%d.png" % i) , layer.genLayerImage(dataResolution(layer.W.get_value(borrow=True).T),(10,10))
+    layers = list(sda.dALayers)
+    if color:
+        first = layers[0]
+        weight = first.W.get_value(borrow=True).T
+        print "first layer shape:",weight.shape
+        fs = weight.shape
+        weight = weight.reshape(fs[0],fs[1]/3,3)
+        weight = weight.swapaxes(1,2)
+        weight = weight.swapaxes(0,1)
+        print "reshaped shape:",weight.shape
+        for c,ch in zip(['r','g','b'],weight):
+            yield ("weight0%s.png" % c),util.makeImage(ch,dataResolution(ch),(10,10))
+        layers = layers[1:]
+    for i,layer in enumerate(layers):
+        weight = layer.W.get_value(borrow=True).T
+        resolution = dataResolution(weight)
+        yield ("weight%d.png" % i) , layer.genLayerImage(resolution,(10,10))
+
+def saveModelImages(modelPath,dstPath,color = False):
+    info,sda = util.load(modelPath)
+    import train
+    x = train.createDataSet(info["dataSet"]).get_value(borrow=True)
+    for name,img in createSdaImages(sda,x,color):
+        dst = dstPath + "/" + name
+        util.ensurePathExists(dst)
+        img.save(dst)
 
 
 if __name__ == '__main__':
-    import os
-    models = list(findModels())
-    l = len(models)
-    print "start converting models:",l
-    for i,modelPath in enumerate(models):
-        if not os.path.isdir(modelPath):
-            print modelPath
-            print "converting %dth model of %d models" % (i,l)
-            convertModelDataToImages(modelPath)
-    print "done! yay!"
+    import sys
+    saveModelImages(sys.argv[1],sys.argv[2],bool(sys.argv[3]))
+    # import os
+    # models = list(findModels())
+    # l = len(models)
+    # print "start converting models:",l
+    # for i,modelPath in enumerate(models):
+    #     if not os.path.isdir(modelPath):
+    #         print modelPath
+    #         print "converting %dth model of %d models" % (i,l)
+    #         convertModelDataToImages(modelPath)
+    # print "done! yay!"

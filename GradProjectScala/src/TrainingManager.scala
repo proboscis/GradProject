@@ -4,6 +4,8 @@ import spray.json._
 
 import scala.util.{Failure, Success, Try}
 
+import scalaz._
+import Scalaz._
 /**
  * @author kento
  */
@@ -60,8 +62,6 @@ object Protocols extends DefaultJsonProtocol{
       case _ => throw new RuntimeException("reading a json is not supported!")
     }
   }
-  import scalaz._
-  import Scalaz._
   implicit val paramFormat = jsonFormat4(Param.apply)
   val ebookTest = EbookData("ebook","path should be here",(100,100),100)
   val mnistTest = Mnist("minst","path should be here", (28,28),100)

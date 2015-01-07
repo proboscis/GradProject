@@ -40,6 +40,13 @@ task main(dependsOn:classes,type:JavaExec){
     //workingDir = sourceSets.main.runtimeClasspath
     ignoreExitValue = true
 }
+task downloadThumbnails(dependsOn:classes,type:JavaExec){
+    main = "EBookDownloader"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    //workingDir = sourceSets.main.runtimeClasspath
+    ignoreExitValue = true
+}
 task utilTest(dependsOn:classes,type:JavaExec){
     main = "Util"
     classpath = sourceSets.main.runtimeClasspath

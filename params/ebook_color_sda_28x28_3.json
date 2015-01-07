@@ -1,0 +1,20 @@
+{
+  "dst": "../models/ebooks/color/colors_28x28_3.pkl",
+  "dataSet": {
+    "kind": "ebook",
+    "path": "../resized/28x28",
+    "shape": [28,28,3],
+    "numData": 10000
+  },
+  "model": {
+    "preLearningRates": [0.01, 0.01, 0.01],
+    "batchSize": 20,
+    "corruptionLevels": [0.2, 0.1, 0.1],
+    "hiddenLayerSizes": [5000,3000, 10],
+    "nIn": 2352,
+    "randomSeed": 1234,
+    "pretrainingEpochs": [15, 15, 15],
+    "kind": "sda",
+    "nOut": 10
+  }
+}
