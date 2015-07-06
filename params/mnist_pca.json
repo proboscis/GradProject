@@ -1,0 +1,11 @@
+{
+  "dst": "../models/mnist/pca.pkl",
+  "dataSet": {
+    "kind": "mnist",
+    "path": "../data",
+    "shape": [28, 28]
+  },
+  "model": {
+    "kind": "pca"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "dst": "../models/mnist/sda_e15.pkl",
+  "dataSet": {
+    "kind": "mnist",
+    "path": "../data",
+    "shape": [28, 28],
+    "numData": 40000
+  },
+  "model": {
+    "preLearningRates": [0.01, 0.01, 0.01, 0.01],
+    "batchSize": 20,
+    "corruptionLevels": [0.3, 0.2, 0.1, 0.1],
+    "hiddenLayerSizes": [1000, 1000, 1000, 10],
+    "nIn": 784,
+    "randomSeed": 1234,
+    "pretrainingEpochs": [15, 15, 15, 15],
+    "kind": "sda",
+    "nOut": 10
+  }
+}
