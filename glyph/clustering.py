@@ -5,7 +5,12 @@ import visualize
 import numpy
 import matplotlib
 from sklearn.cluster import KMeans
+from sklearn.manifold import MDS
+from sklearn.metrics import euclidean_distances
+from scipy.spatial.distance import squareform,pdist
 import itertools
+import matplotlib.pyplot as plt
+from sklearn import metrics
 def showClustering(data):
     kmeans = KMeans()
     kmeans.fit(data)
@@ -33,6 +38,7 @@ def showClustering(data):
     plt.title("clusters")
     plt.show()
 
+
 def applyKMeans(data):
     kmeans = KMeans()
     kmeans.fit(data)
@@ -45,7 +51,7 @@ def applyDBSCAN(data):
     dbscan.fit(data)
     return dbscan.labels_
 
-def showInputImageAndClass(x,y,clusterizer,resolution,gray=False):
+def showInputImageAndClass(x,y,clusterizer,resolution,gray=False,dstFolder=None):
     from itertools import groupby
     from matplotlib import pyplot as plt, cm as cm
     labels = clusterizer(y)
@@ -67,8 +73,26 @@ def showInputImageAndClass(x,y,clusterizer,resolution,gray=False):
                 plt.imshow(img[1].reshape(resolution),cmap=cm.Greys_r)
             else:
                 plt.imshow(img[1].reshape(resolution))
-    plt.title("clustering result")
+        if dstFolder is not None:
+            dst = dstFolder+"/%s.png" % str(k)
+            util.ensurePathExists(dst)
+            plt.savefig(dst ,bbox_inches='tight')
+    if dstFolder is None:
+        plt.title("clustering result")
+        plt.show()
+    plt.close("all")
+
+def showImages(images,tile = (5,5)):
+    from itertools import groupby
+    from matplotlib import pyplot as plt, cm as cm
+    #assume (nImage,w,h,ch)
+    fig = plt.figure()
+
+    for i,img in enumerate(images[:tile[0]*tile[1]]):
+        fig.add_subplot(tile[0],tile[1],i)
+        plt.imshow(img)
     plt.show()
+
 
 def showResult(groups):
     import matplotlib
@@ -84,15 +108,39 @@ def showResult(groups):
     plt.show()
 
 def showPlots(data):
-    from pylab import *
-    import matplotlib.pyplot as plt
+    print "plotting points.."
     plt.figure()
     plt.plot(data[0],data[1],'ro')
     plt.show()
 
+def savePlots(dst,data):
+    print "saving plotted points.."
+    util.ensurePathExists(dst)
+    plt.figure()
+    plt.plot(data[0],data[1],'ro')
+    plt.savefig(dst,bbox_inches='tight')
+
+def saveMDSPlots(dst,data):
+    mds = MDS(dissimilarity="precomputed")
+    distances = squareform(pdist(data[:1000],'euclidean'))
+    points = mds.fit_transform(distances)
+    print "mds done!"
+    print "points shape", points.shape
+    savePlots(dst,points.swapaxes(0,1))
+
+def showMDSPlots(data):
+    mds = MDS(dissimilarity="precomputed")
+    distances = squareform(pdist(data[:1000],'euclidean'))
+    points = mds.fit_transform(distances)
+    print "mds done!"
+    print "points shape", points.shape
+    showPlots(points.swapaxes(0,1))
+
 if __name__ == '__main__':
     from os import listdir
     from itertools import groupby,islice
+
+
     #pkl = "../models/ebooks/s1000c0.0l0.0e10s1000c0.0l0.0e45s10c0.0l0.0e45b1.pkl"
     pkl = "/home/kento/Documents/GradProject/models/ebooks/color/colors_28x28_2.pkl"
     info,model = util.load(pkl)
@@ -107,9 +155,12 @@ if __name__ == '__main__':
     # y = pca.transform(compressed)
     print "data shape",compressed.shape
     #showInputImageAndClass(inputs,y,applyKMeans,(28,28),True)
-    showInputImageAndClass(inputs,compressed,applyDBSCAN,(28,28,3),False)
+    #showInputImageAndClass(inputs,compressed,applyDBSCAN,(28,28,3),False)
     #showClustering(y)
     #showPlots(y.swapaxes(0,1))
+    showMDSPlots(compressed)
+    print "score:",metrics.silhouette_score(compressed, applyDBSCAN(compressed), metric='euclidean')
+
     # labels = applyKMeans(compressed)
     # zipped = zip(labels,inputPaths)
     # zipped.sort(key=lambda a: a[0])

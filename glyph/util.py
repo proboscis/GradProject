@@ -260,6 +260,9 @@ if __name__ == '__main__':
     for k,v in groups:
         print k,v
 
+def fileString(path):
+    return reduce(lambda a,b:a+b, fileLines(path))
+
 
 def makeImage(data,resolution,tileShape):
     from utils import tile_raster_images
@@ -281,3 +284,6 @@ def run_command(command):
 
 def writeFile(path,f):
     autoClose(path,"w",f)
+
+def writeFileStr(path,str):
+    writeFile(path,lambda f:f.write(str))

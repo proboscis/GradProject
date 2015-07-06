@@ -2,7 +2,8 @@ __author__ = 'kento'
 import util,numpy
 def modelTable():
     return {
-        "sda":createSDA
+        "sda":createSDA,
+        "pca":createPCA
     }
 
 def dataSetTable():
@@ -19,7 +20,7 @@ def createPCA(info,trainset):
     import sklearn
     from sklearn.decomposition import PCA
     pca = PCA(n_components=10)
-    return pca , pca.fit
+    return pca , lambda d : pca.fit(d.get_value(borrow=True))
 
 def createSDA(info,trainset):
     modelInfo = info["model"]
@@ -116,7 +117,7 @@ def evalModel(jsonObj):
     dst = info["dst"]
     def l():
         return info,train(info)
-    model = util.saveIfNotExist(dst,l)
+    return util.loadOrCall(dst,l)
 
 if __name__ == '__main__':
     import sys,json

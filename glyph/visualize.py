@@ -167,6 +167,7 @@ def createSdaImages(sda,inputs,color=False):
         print "reshaped shape:",weight.shape
         for c,ch in zip(['r','g','b'],weight):
             yield ("weight0%s.png" % c),util.makeImage(ch,dataResolution(ch),(10,10))
+
         layers = layers[1:]
     for i,layer in enumerate(layers):
         weight = layer.W.get_value(borrow=True).T
@@ -182,10 +183,34 @@ def saveModelImages(modelPath,dstPath,color = False):
         util.ensurePathExists(dst)
         img.save(dst)
 
+def loadInfoModel(modelPath):
+    info,sda = util.load(modelPath)
+    import train
+    return info,sda
+
+def showFirstWeight(sda):
+    first = list(sda.dALayers)[0]
+    weight = first.W.get_value(borrow=True).T
+    print "first layer shape:",weight.shape
+    weight = weight.reshape(5000,28,28,3)
+    import clustering
+    clustering.showImages(weight)
+
+def showInputs(modelPath):
+    info,sda = util.load(modelPath)
+    import train
+    x = train.createDataSet(info["dataSet"]).get_value(borrow=True)
+    import clustering
+    clustering.showImages(x[:25].reshape(25,28,28,3))
 
 if __name__ == '__main__':
     import sys
-    saveModelImages(sys.argv[1],sys.argv[2],bool(sys.argv[3]))
+    #saveModelImages(sys.argv[1],sys.argv[2],bool(sys.argv[3]))
+    info,sda = loadInfoModel(sys.argv[1])
+    showFirstWeight(sda)
+    showInputs(sys.argv[1])
+
+
     # import os
     # models = list(findModels())
     # l = len(models)
