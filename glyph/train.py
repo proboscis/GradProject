@@ -107,7 +107,7 @@ def createEbookDataSet(info):
     print "done loading images"
     print result
     print result.shape
-    print "transporing to theano shared value"
+    print "transpoting to theano shared value"
     return theano.shared(numpy.asarray(result.reshape(nInput,size),
                          dtype=theano.config.floatX),
                          borrow=True)

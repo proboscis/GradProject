@@ -80,9 +80,6 @@ def findModels():
             yield abspath
 
 
-
-
-
 def reconstructor(sda):
     top = sda.dALayers[0]
     reconstructed = top.reconstructedInput(top.hiddenValues(sda.x))
@@ -182,6 +179,48 @@ def saveModelImages(modelPath,dstPath,color = False):
         util.ensurePathExists(dst)
         img.save(dst)
 
+def imgScatter(coords,images):
+    """
+    coords: seq[(x,y)]
+    images: seq[Image]
+    """
+    from   matplotlib.offsetbox import OffsetImage,AnnotationBbox
+    offsetImages = map(lambda i: OffsetImage(i,zoom=1),images)
+    import matplotlib.pyplot as plt
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    x,y = zip(*coords)
+    ax.plot(x,y,'o')
+    def genArtists():
+        for (x,y),img in zip(coords ,offsetImages):
+            ab = AnnotationBbox(img,(x,y),xycoords='data',frameon=False)
+            yield ax.add_artist(ab)
+    artists = list(genArtists())
+    return fig
+
+def showInputImageAndClass(x,y,clusterizer,resolution,gray=False):
+    from itertools import groupby
+    from matplotlib import pyplot as plt, cm as cm
+    labels = clusterizer(y)
+    nIn,length = x.shape
+    print "input shape:",x.shape
+    print "given resolution:",resolution
+    sets = zip(labels,x)
+    sets.sort(key = lambda a:a[0])
+    count = 0
+    for k,g in groupby(sets,lambda a : a[0]):
+        count += 1
+        if count > 25:
+            break
+        fig = plt.figure(str(k))
+        group = list(g)
+        for i,img in enumerate(group[:25]):
+            fig.add_subplot(5,5,i)
+            if gray:
+                plt.imshow(img[1].reshape(resolution),cmap=cm.Greys_r)
+            else:
+                plt.imshow(img[1].reshape(resolution))
+        yield fig
 
 if __name__ == '__main__':
     import sys

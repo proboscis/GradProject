@@ -39,18 +39,20 @@ def experimentCase(paramPath,resultPath):
     print (info)
     info,model = train.evalModel(info)
     print "load dataset"
-    x = train.createDataSet(info["dataSet"]).get_value(borrow=True)
+    x = util.loadOrCall(resultPath+"/x.pkl",lambda :train.createDataSet(info["dataSet"]).get_value(borrow=True))
     print "create compressor"
     compress = modelToCompressor(info,model)
-    compressed = compress(x)
+    compressed = util.loadOrCall(resultPath+"/compressed.pkl",lambda :compress(x))
     print "create clustering result images"
 #    clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
-    clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"])
+    #clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"])
     print "create mds distribution image"
-    clustering.saveMDSPlots(resultPath+"/mds.png", compressed)
+    mdsFig = clustering.MDSPlots(x,compressed,info["dataSet"]["shape"])
+    mdsFig.savefig(resultPath+"/mds")
+    #clustering.saveMDSPlots(resultPath+"/mds.png", compressed)
     print "calculate clustering score"
-    score = metrics.silhouette_score(compressed, clustering.applyDBSCAN(compressed), metric='euclidean')
-    util.writeFileStr(resultPath+"/score.txt",str(score))
+    #score = metrics.silhouette_score(compressed, clustering.applyDBSCAN(compressed), metric='euclidean')
+    #util.writeFileStr(resultPath+"/score.txt",str(score))
     print "experiment case done!"
 
 if __name__ == '__main__':

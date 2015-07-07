@@ -7,6 +7,18 @@ from theano import tensor as T
 from itertools import islice
 import zipfile
 
+class dotdict(dict):
+    def __getattr__(self,attr):
+        res = self.get(attr)
+        if(type(res) == dict):
+            return dotdict(res)
+        else:
+            return res
+
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+    
 def loadMnistData(datasetPath="mnist.pkl.gz"):
     import theano
     ''' Loads the dataset
@@ -234,8 +246,10 @@ def saveIfNotExist(path,f,force=False):
 
 def loadOrCall(path,proc,force=False):
     if exists(path) and not force:
-        print "use cache: " + path
-        return load(path)
+        print "loading cache: " + path
+        res = load(path)
+        print "done."
+        return res
     else:
         data = proc()
         print "saved cache: " + path
@@ -247,8 +261,11 @@ def save(obj,fileName):
     autoClose(fileName,'wb',lambda f:pickle.dump(obj,f))
 
 def load(fileName):
-    return autoClose(fileName,'rb',lambda f:pickle.load(f))
-
+    print "loading file:" + fileName
+    res =  autoClose(fileName,'rb',lambda f:pickle.load(f))
+    print "done."
+    return res
+    
 def checkTime(f):
     import time
     start = time.time()
@@ -284,3 +301,7 @@ def run_command(command):
 
 def writeFile(path,f):
     autoClose(path,"w",f)
+
+
+def writeFileStr(path,string):
+    autoClose(path,"w",lambda f:f.write(string))

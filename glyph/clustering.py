@@ -67,8 +67,9 @@ def showInputImageAndClass(x,y,clusterizer,resolution,gray=False):
                 plt.imshow(img[1].reshape(resolution),cmap=cm.Greys_r)
             else:
                 plt.imshow(img[1].reshape(resolution))
-    plt.title("clustering result")
-    plt.show()
+        yield fig
+
+#    plt.show()
 
 def showResult(groups):
     import matplotlib
@@ -84,13 +85,45 @@ def showResult(groups):
     plt.show()
 
 def showPlots(data):
-    from pylab import *
+
     import matplotlib.pyplot as plt
     plt.figure()
     plt.plot(data[0],data[1],'ro')
     plt.show()
 
+def MDSPlots(x,compressed,shape):
+    """
+    generator of pyplot figures
+    """
+    from sklearn.manifold import MDS
+    mds = MDS(n_components = 2,dissimilarity = "precomputed")
+    print "calculating similarities"
+    from scipy.spatial.distance import squareform, pdist
+    similarities = squareform(pdist(compressed,'mahalanobis'))
+    print "fitting mds"
+    coords = mds.fit_transform(similarities)
+    import visualize as viz
+    print "create figure"
+    nImage = x.shape[0]
+    fig = viz.imgScatter(coords,x.reshape((nImage,)+tuple(shape)))
+    return fig
+    
+    
+
+def MDSPlotTest():
+    import json
+    import experiment
+    resPath = "../experiments/ebook_color_pca_3"
+    experiment.experimentCase("../params/ebook_color_pca_28x28_3.json",resPath)
+    info = json.loads(util.fileString("../params/ebook_color_pca_28x28_3.json"))
+    info = util.dotdict(info)
+    x = util.load(resPath+"/x.pkl")
+    print x.dtype
+    compressed = util.load(resPath+"/compressed.pkl")
+    MDSPlots(x,compressed,info.dataSet.shape)
+
 if __name__ == '__main__':
+    """
     from os import listdir
     from itertools import groupby,islice
     #pkl = "../models/ebooks/s1000c0.0l0.0e10s1000c0.0l0.0e45s10c0.0l0.0e45b1.pkl"
@@ -116,3 +149,9 @@ if __name__ == '__main__':
     # grouped = groupby(zipped,lambda a : a[0])
     # showResult(grouped)
 
+    """
+    fig = MDSPlotTest()
+    import matplotlib.pyplot as plt
+    fig.savefig()
+    print("show figure")
+    plt.show()
