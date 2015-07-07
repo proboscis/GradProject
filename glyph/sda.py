@@ -40,7 +40,8 @@ class StackedDenoisingAutoencoder:
         self.sigmoidLayers,self.dALayers = zip(*makeLayers(self.x,nIn,reversed(hiddenLayerSizes)))
         print "created sda with layer shapes below."
         for da in self.dALayers:
-            print da.W.get_value().shape
+            
+            print "layersize:", da.W.get_value().shape
         self.logLayer = LogisticRegression(self.sigmoidLayers[-1].output,hiddenLayerSizes[-1],nOut)
         self.params = [l.params for l in self.sigmoidLayers] + [self.logLayer.negativeLogLikelihood(self.y)]
         self.fineTuneCost = self.logLayer.negativeLogLikelihood(self.y)

@@ -51,7 +51,7 @@ def createSDA(info,trainset):
         print type(trainset)
         print trainset.shape
         img = visualize.makeImageOfData(trainset.get_value(borrow=True))
-        dst = info["dst"].replace("pkl","")+"/inputs.png"
+        dst = info["dst"].replace(".pkl","")+"/inputs.png"
         ensureSaveImage(img,dst)
 
     def trainer(data):

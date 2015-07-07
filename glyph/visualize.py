@@ -44,6 +44,8 @@ def smallestSquare(area):
 
 def genCompressors(sda):
     layers = sda.sigmoidLayers
+    print "genCompressor(sda),sda.x.shape = ", sda.x.shape
+    #this does not determine the result shape, right?
     for layer in layers:
         f = theano.function(
             inputs = [sda.x],
@@ -63,7 +65,7 @@ def makeImageOfData(data,resolution=None):
     import numpy
     shape = data.shape
     res = dataResolution(data)
-    print shape,res
+    print "makeImageOfData:inputShape",shape,"output shape:",res
     if resolution is None:
         resolution = dataResolution(data)
     return util.makeImage(data,resolution,(10,10))
@@ -141,6 +143,10 @@ def convertModelDataToImages(path):
     sda.dALayers[0].saveLayerImage(folder + "/layer_weight.png",info["dataSet"]["shape"],(10,10))
 
 def createSdaImages(sda,inputs,color=False):
+    """
+    return Seq[ImageName,Image]
+    """
+    print "createSdaImages"
     #layer activations
     for i,comp in enumerate(genCompressors(sda)):
         compressed = comp(inputs)
@@ -241,7 +247,8 @@ def MDSPlots(images,compressed):
     mds = MDS(n_components = 2,dissimilarity = "precomputed")
     print "calculating similarities"
     from scipy.spatial.distance import squareform, pdist
-    similarities = squareform(pdist(compressed,'mahalanobis'))
+#    similarities = squareform(pdist(compressed,'mahalanobis'))
+    similarities = squareform(pdist(compressed,'euclidean'))
     print "fitting mds"
     coords = mds.fit_transform(similarities)
     import visualize as viz

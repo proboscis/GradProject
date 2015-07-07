@@ -14,14 +14,16 @@ import itertools
 import matplotlib.pyplot as plt
 from sklearn import metrics
 
+def experiments():
+    return [
+        ("../params/ebook_color_sda_28x28_2.json","../experiments/ebook_color_sda_2"),
+        ("../params/ebook_color_pca_28x28_2.json","../experiments/ebook_color_pca_2"),
+        ("../params/mnist_sda_e15.json","../experiments/mnist_sda"),
+        ("../params/mnist_pca.json","../experiments/mnist_pca")
+    ]
+
 def experimentAll():
-    experiments = {
-        "../params/ebook_color_sda_28x28_2.json":"../experiments/ebook_color_sda_2",
-        "../params/ebook_color_pca_28x28_2.json":"../experiments/ebook_color_pca_2",
-        "../params/mnist_sda_e15.json":"../experiments/mnist_sda",
-        "../params/mnist_pca.json":"../experiments/mnist_pca"
-    }
-    for paramPath,dstPath in experiments.iteritems():
+    for paramPath,dstPath in experiments().iteritems():
         experimentCase(paramPath,dstPath)
 
 def modelToCompressor(info,model):
@@ -40,18 +42,25 @@ def experimentCase(paramPath,resultPath):
     info,model = train.evalModel(info)
     print "load dataset"
     x = util.loadOrCall(resultPath+"/x.pkl",lambda :train.createDataSet(info["dataSet"]).get_value(borrow=True))
+    numClustering = 100
+    x = x[:numClustering]
     print "create compressor"
+    print "compressing input shape:",x.shape
     compress = modelToCompressor(info,model)
-    compressed = util.loadOrCall(resultPath+"/compressed.pkl",lambda :compress(x))
+    compressed = util.loadOrCall(resultPath+"/compressed.pkl",lambda :compress(x),force=True)
     print "create clustering result images"
-   # clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
+    #clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
 
     labels = clustering.applyDBSCAN(compressed)
-    images = x.reshape((info["dataSet"]["numData"],)+tuple(info["dataSet"]["shape"]))
+    images = x.reshape((numClustering,)+tuple(info["dataSet"]["shape"]))
     clusterImages = visualize.genClusterFigures(images,labels)
     for i,fig in enumerate(clusterImages):
         fig.savefig(resultPath + "/cluster"+str(i))
     print "create mds distribution image"
+    print "image shape",images.shape
+    print "x shape",x.shape
+    print "compressed shape", compressed.shape
+
     mdsFig = visualize.MDSPlots(images,compressed)
     mdsFig.savefig(resultPath+"/mds")
     #clustering.saveMDSPlots(resultPath+"/mds.png", compressed)
@@ -61,5 +70,8 @@ def experimentCase(paramPath,resultPath):
     print "experiment case done!"
 
 if __name__ == '__main__':
-    experimentCase("../params/tiny.json","../experiments/tiny")
+    #experimentCase("../params/tiny.json","../experiments/tiny")
+    experimentCase("../params/newsda.json","../experiments/newsda")
+    #experimentCase("../params/tinysda.json","../experiments/tinysda")
+    #experimentCase(*experiments()[0])
     #experimentAll()
