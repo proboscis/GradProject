@@ -41,8 +41,9 @@ def experimentCase(paramPath,resultPath):
     print (info)
     info,model = train.evalModel(info)
     print "load dataset"
-    x = util.loadOrCall(resultPath+"/x.pkl",lambda :train.createDataSet(info["dataSet"]).get_value(borrow=True))
-    numClustering = 100
+    info["dataSet"]["numData"] = 1000
+    x = util.loadOrCall(resultPath+"/x.pkl",lambda :train.createDataSet(info["dataSet"]).get_value(borrow=True),force = True)
+    numClustering = 1000
     x = x[:numClustering]
     print "create compressor"
     print "compressing input shape:",x.shape
