@@ -1,0 +1,12 @@
+{
+  "dst": "../models/ebooks/color/pca_28x28_3.pkl",
+  "dataSet": {
+    "kind": "ebook",
+    "path": "../resized/28x28",
+    "shape": [28,28,3],
+    "numData": 100
+  },
+  "model": {
+    "kind": "pca"
+  }
+}

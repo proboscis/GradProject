@@ -198,33 +198,79 @@ def imgScatter(coords,images):
     artists = list(genArtists())
     return fig
 
-def showInputImageAndClass(x,y,clusterizer,resolution,gray=False):
+def genClusterFigures(images,labels):
+    """
+    images : Seq[Image]
+    labels: Seq[Int]
+    resolution : tuple[Int] // (28,28,3)
+    return : Iterator[Figure]
+    """
     from itertools import groupby
     from matplotlib import pyplot as plt, cm as cm
-    labels = clusterizer(y)
-    nIn,length = x.shape
-    print "input shape:",x.shape
-    print "given resolution:",resolution
-    sets = zip(labels,x)
+    nIn = len(images)
+    print "input shape:",images.shape
+    sets = zip(labels,images)
     sets.sort(key = lambda a:a[0])
     count = 0
-    for k,g in groupby(sets,lambda a : a[0]):
-        count += 1
-        if count > 25:
-            break
-        fig = plt.figure(str(k))
-        group = list(g)
-        for i,img in enumerate(group[:25]):
-            fig.add_subplot(5,5,i)
-            if gray:
-                plt.imshow(img[1].reshape(resolution),cmap=cm.Greys_r)
-            else:
-                plt.imshow(img[1].reshape(resolution))
-        yield fig
+    groups = [(k,zip(*list(g))[1]) for k,g in groupby(sets,lambda a : a[0])]
+    groups.sort(key = lambda p: len(p[1]))
+    
+    for label,group in groups:
+        title = str(label)
+        yield imageArray(group,title = title)
+        
 
+def imageArray(images,row = 5, col = 5,title = "no title"):
+
+    """
+    images:Seq[Image[28,28,3]]
+    make a image matrix figure.
+    """
+    from matplotlib import pyplot as plt, cm as cm
+    fig = plt.figure(title)
+    for i, img in enumerate(images[:row*col]):
+        ax = fig.add_subplot(row,col,i)
+        ax.imshow(img)
+    return fig
+
+def MDSPlots(images,compressed):
+    """
+    generator of pyplot figures
+    """
+    from sklearn.manifold import MDS
+    mds = MDS(n_components = 2,dissimilarity = "precomputed")
+    print "calculating similarities"
+    from scipy.spatial.distance import squareform, pdist
+    similarities = squareform(pdist(compressed,'mahalanobis'))
+    print "fitting mds"
+    coords = mds.fit_transform(similarities)
+    import visualize as viz
+    print "create figure"
+    fig = viz.imgScatter(coords,images)
+    return fig
+
+    
+def MDSPlotTest():
+    import json
+    import experiment
+    resPath = "../experiments/ebook_color_pca_3"
+    experiment.experimentCase("../params/ebook_color_pca_28x28_3.json",resPath)
+    info = json.loads(util.fileString("../params/ebook_color_pca_28x28_3.json"))
+    info = util.dotdict(info)
+    x = util.load(resPath+"/x.pkl")
+    print x.dtype
+    compressed = util.load(resPath+"/compressed.pkl")
+    MDSPlots(x,compressed,info.dataSet.shape)
+
+        
 if __name__ == '__main__':
     import sys
-    saveModelImages(sys.argv[1],sys.argv[2],bool(sys.argv[3]))
+    fig = MDSPlotTest()
+    import matplotlib.pyplot as plt
+    fig.savefig()
+    print("show figure")
+    plt.show()
+    # saveModelImages(sys.argv[1],sys.argv[2],bool(sys.argv[3]))
     # import os
     # models = list(findModels())
     # l = len(models)

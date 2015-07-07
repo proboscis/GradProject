@@ -44,10 +44,15 @@ def experimentCase(paramPath,resultPath):
     compress = modelToCompressor(info,model)
     compressed = util.loadOrCall(resultPath+"/compressed.pkl",lambda :compress(x))
     print "create clustering result images"
-#    clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
-    #clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"])
+   # clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
+
+    labels = clustering.applyDBSCAN(compressed)
+    images = x.reshape((info["dataSet"]["numData"],)+tuple(info["dataSet"]["shape"]))
+    clusterImages = visualize.genClusterFigures(images,labels)
+    for i,fig in enumerate(clusterImages):
+        fig.savefig(resultPath + "/cluster"+str(i))
     print "create mds distribution image"
-    mdsFig = clustering.MDSPlots(x,compressed,info["dataSet"]["shape"])
+    mdsFig = visualize.MDSPlots(images,compressed)
     mdsFig.savefig(resultPath+"/mds")
     #clustering.saveMDSPlots(resultPath+"/mds.png", compressed)
     print "calculate clustering score"
@@ -56,4 +61,5 @@ def experimentCase(paramPath,resultPath):
     print "experiment case done!"
 
 if __name__ == '__main__':
-    experimentAll()
+    experimentCase("../params/tiny.json","../experiments/tiny")
+    #experimentAll()

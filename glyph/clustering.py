@@ -45,30 +45,6 @@ def applyDBSCAN(data):
     dbscan.fit(data)
     return dbscan.labels_
 
-def showInputImageAndClass(x,y,clusterizer,resolution,gray=False):
-    from itertools import groupby
-    from matplotlib import pyplot as plt, cm as cm
-    labels = clusterizer(y)
-    nIn,length = x.shape
-    print "input shape:",x.shape
-    print "given resolution:",resolution
-    sets = zip(labels,x)
-    sets.sort(key = lambda a:a[0])
-    count = 0
-    for k,g in groupby(sets,lambda a : a[0]):
-        count += 1
-        if count > 25:
-            break
-        fig = plt.figure(str(k))
-        group = list(g)
-        for i,img in enumerate(group[:25]):
-            fig.add_subplot(5,5,i)
-            if gray:
-                plt.imshow(img[1].reshape(resolution),cmap=cm.Greys_r)
-            else:
-                plt.imshow(img[1].reshape(resolution))
-        yield fig
-
 #    plt.show()
 
 def showResult(groups):
@@ -91,36 +67,7 @@ def showPlots(data):
     plt.plot(data[0],data[1],'ro')
     plt.show()
 
-def MDSPlots(x,compressed,shape):
-    """
-    generator of pyplot figures
-    """
-    from sklearn.manifold import MDS
-    mds = MDS(n_components = 2,dissimilarity = "precomputed")
-    print "calculating similarities"
-    from scipy.spatial.distance import squareform, pdist
-    similarities = squareform(pdist(compressed,'mahalanobis'))
-    print "fitting mds"
-    coords = mds.fit_transform(similarities)
-    import visualize as viz
-    print "create figure"
-    nImage = x.shape[0]
-    fig = viz.imgScatter(coords,x.reshape((nImage,)+tuple(shape)))
-    return fig
     
-    
-
-def MDSPlotTest():
-    import json
-    import experiment
-    resPath = "../experiments/ebook_color_pca_3"
-    experiment.experimentCase("../params/ebook_color_pca_28x28_3.json",resPath)
-    info = json.loads(util.fileString("../params/ebook_color_pca_28x28_3.json"))
-    info = util.dotdict(info)
-    x = util.load(resPath+"/x.pkl")
-    print x.dtype
-    compressed = util.load(resPath+"/compressed.pkl")
-    MDSPlots(x,compressed,info.dataSet.shape)
 
 if __name__ == '__main__':
     """
@@ -150,8 +97,3 @@ if __name__ == '__main__':
     # showResult(grouped)
 
     """
-    fig = MDSPlotTest()
-    import matplotlib.pyplot as plt
-    fig.savefig()
-    print("show figure")
-    plt.show()
