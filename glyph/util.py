@@ -177,6 +177,8 @@ def fileLines(fileName):
     with open(fileName,'r') as f:
         for line in f:
             yield line
+def fileString(fileName):
+    return reduce(lambda a,b: a + b, list(fileLines(fileName)))
 
 def zipFileLines(zipName,fileName):
     with zipfile.ZipFile(zipName) as z:
@@ -221,7 +223,8 @@ def fileMemo(f,path):
 
 def saveIfNotExist(path,f,force=False):
     if exists(path) and not force:
-        return None
+        print "path exists, and performing again: " + path
+        return f()
     else:
         data = f()
         print "saved data: " + path

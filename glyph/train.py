@@ -1,8 +1,9 @@
 __author__ = 'kento'
-import util,numpy
+import util, numpy
 def modelTable():
     return {
-        "sda":createSDA
+        "sda":createSDA,
+        "pca":createPCA
     }
 
 def dataSetTable():
@@ -19,7 +20,13 @@ def createPCA(info,trainset):
     import sklearn
     from sklearn.decomposition import PCA
     pca = PCA(n_components=10)
-    return pca , pca.fit
+    def fit(x):
+        t = type(x)
+        if(t == 'numpy.ndarray'):
+            pca.fit(x)
+        else:
+            pca.fit(x.get_value(borrow=True))            
+    return pca , fit
 
 def createSDA(info,trainset):
     modelInfo = info["model"]
@@ -68,7 +75,7 @@ def createSDA(info,trainset):
 
 
     return model,trainer
-    #return something
+
 
 def createDataSet(dataSetInfo):
     return dataSetTable()[dataSetInfo["kind"]](dataSetInfo)
@@ -97,12 +104,18 @@ def createEbookDataSet(info):
         if i % 1000 == 0:
             print "loading %dth image" % i
         result[i] = img / 255.0
+    print "done loading images"
+    print result
+    print result.shape
+    print "transporing to theano shared value"
     return theano.shared(numpy.asarray(result.reshape(nInput,size),
                          dtype=theano.config.floatX),
                          borrow=True)
 
 def createMnistDataSet(info):
+    print "createMnistDataSet:" + info
     data = util.loadMnistData()
+    print "created" , data
     return data[0][0] #train_set_x
 
 def train(info):
@@ -116,8 +129,14 @@ def evalModel(jsonObj):
     dst = info["dst"]
     def l():
         return info,train(info)
-    model = util.saveIfNotExist(dst,l)
+    #model = util.saveIfNotExist(dst,l)
+    model = util.loadOrCall(dst,l)
+    print model
+    return model
 
 if __name__ == '__main__':
+    """
+    craete,train,and visualize a model with given parameter
+    """
     import sys,json
     evalModel(json.loads(sys.argv[1]))

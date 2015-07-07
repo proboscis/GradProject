@@ -1,3 +1,5 @@
+*.ensime
+*\#*
 /filtered
 /filtered/comics/
 /pylearn2
