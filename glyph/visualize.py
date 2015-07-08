@@ -235,7 +235,11 @@ def imageArray(images,row = 5, col = 5,title = "no title"):
     from matplotlib import pyplot as plt, cm as cm
     fig = plt.figure(title)
     for i, img in enumerate(images[:row*col]):
-        ax = fig.add_subplot(row,col,i)
+        ax = fig.add_subplot(row,col,i+1)
+        fig.subplots_adjust(hspace = 0.001,wspace = 0.001)
+        ax.set_xticklabels(())
+        ax.set_yticklabels(())
+        ax.tick_params(labelbottom='off',labelleft='off',labelright='off',labeltop='off')
         ax.imshow(img)
     return fig
 

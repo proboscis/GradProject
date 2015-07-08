@@ -113,7 +113,7 @@ def createEbookDataSet(info):
                          borrow=True)
 
 def createMnistDataSet(info):
-    print "createMnistDataSet:" + info
+    print "createMnistDataSet:" , info
     data = util.loadMnistData()
     print "created" , data
     return data[0][0] #train_set_x

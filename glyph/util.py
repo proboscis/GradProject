@@ -280,7 +280,6 @@ if __name__ == '__main__':
     for k,v in groups:
         print k,v
 
-
 def makeImage(data,resolution,tileShape):
     from utils import tile_raster_images
     try:
@@ -291,6 +290,8 @@ def makeImage(data,resolution,tileShape):
         tile_raster_images(X=data,
                            img_shape=resolution, tile_shape=tileShape,
                            tile_spacing=(1, 1)))
+
+
 
 def run_command(command):
     import subprocess

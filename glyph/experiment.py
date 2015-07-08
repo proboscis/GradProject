@@ -72,7 +72,8 @@ def experimentCase(paramPath,resultPath):
 
 if __name__ == '__main__':
     #experimentCase("../params/tiny.json","../experiments/tiny")
-    experimentCase("../params/newsda.json","../experiments/newsda")
+    #experimentCase("../params/newsda.json","../experiments/newsda")
+    experimentCase("../params/newsda_mnist.json","../experiments/newsda_mnist")
     #experimentCase("../params/tinysda.json","../experiments/tinysda")
     #experimentCase(*experiments()[0])
     #experimentAll()
