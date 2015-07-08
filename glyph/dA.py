@@ -64,18 +64,22 @@ class DenoisingAutoEncoder():
         return self.theanoRng.binomial(size=input.shape,n=1,p=1-corruptionLevel,dtype=theano.config.floatX) * input
 
     def costFunctionAndUpdates(self,corruptionLevel,learningRate):
+        cost,param,gparam = self.costParamGrads(corruptionLevel)
+        updates = [
+            (param,param - learningRate*gparam)
+            for param,gparam in zip(self.params, gparams)
+        ]
+        return (cost,updates)
+        
+    def costParamGrads(self,corruptionLevel):
         tildeX = self.corruptedInput(self.x,corruptionLevel)
         y = self.hiddenValues(tildeX)
         z = self.reconstructedInput(y)
         L = - T.sum(self.x * T.log(z) + ( 1- self.x) * T.log(1-z),axis=1)
         cost = T.mean(L)
         gparams = T.grad(cost,self.params)
-        updates = [
-            (param,param - learningRate*gparam)
-            for param,gparam in zip(self.params, gparams)
-        ]
-        return (cost,updates)
-
+        return (cost,self.params,gparams)
+        
     def genLayerImage(self,resolution,tileShape):
         try:
             import PIL.Image as Image

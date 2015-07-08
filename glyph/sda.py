@@ -66,7 +66,32 @@ class StackedDenoisingAutoencoder:
                 givens={self.x:trainSetX[batchBegin:batchEnd]},
             )
             yield f
-
+            
+    def pretrainingFunctionsWithOptimizer(self,trainSetX,batchSize,optimizer):
+        """
+        with optimizer.
+        optimizer(params,grads)
+        """
+        index = T.lscalar("index")
+        corruptionLevel = T.scalar('corruption')
+        learningRate = T.scalar("learning")
+        batchBegin = batchSize * index
+        batchEnd = batchBegin + batchSize
+        for dA in self.dALayers:
+            #cost,updates = dA.costFunctionAndUpdates(corruptionLevel,learningRate)
+            cost, param, grads = dA.costParamGrads(corruptionLevel)
+            updates = optimizer(param,grads)
+            f = theano.function(
+                inputs=[
+                    index,
+                    theano.Param(corruptionLevel,default=0.2),
+                ],
+                outputs=cost,
+                updates=updates,
+                givens={self.x:trainSetX[batchBegin:batchEnd]},
+            )
+            yield f
+            
     def fineTuneFunctions(self,datasets,batchSize,learningRate):
         index = T.lscalar('i')
         trainSetX,trainSetY = datasets[0]

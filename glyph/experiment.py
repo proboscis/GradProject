@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 __author__ = 'kento'
 import util
 import train
@@ -43,7 +44,7 @@ def experimentCase(paramPath,resultPath):
     print "load dataset"
     info["dataSet"]["numData"] = 1000
     x = util.loadOrCall(resultPath+"/x.pkl",lambda :train.createDataSet(info["dataSet"]).get_value(borrow=True),force = True)
-    numClustering = 1000
+    numClustering = 300
     x = x[:numClustering]
     print "create compressor"
     print "compressing input shape:",x.shape
@@ -71,9 +72,12 @@ def experimentCase(paramPath,resultPath):
     print "experiment case done!"
 
 if __name__ == '__main__':
+    import sys
+    args = sys.argv
+    experimentCase(args[1],args[2])
     #experimentCase("../params/tiny.json","../experiments/tiny")
     #experimentCase("../params/newsda.json","../experiments/newsda")
-    experimentCase("../params/newsda_mnist.json","../experiments/newsda_mnist")
+    #experimentCase("../params/newsda_mnist.json","../experiments/newsda_mnist")
     #experimentCase("../params/tinysda.json","../experiments/tinysda")
     #experimentCase(*experiments()[0])
     #experimentAll()

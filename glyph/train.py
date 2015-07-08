@@ -39,7 +39,6 @@ def createSDA(info,trainset):
         nOut=modelInfo["nOut"]
     )
     corruptionLevels = modelInfo["corruptionLevels"]
-    preLearningRates = modelInfo["preLearningRates"]
     batchSize = modelInfo["batchSize"]
     print "batchSize",batchSize
     def ensureSaveImage(img,dst):
@@ -54,6 +53,7 @@ def createSDA(info,trainset):
         dst = info["dst"].replace(".pkl","")+"/inputs.png"
         ensureSaveImage(img,dst)
 
+    
     def trainer(data):
         print "training dataShape", data.get_value(borrow=True).shape
         if visualize:
@@ -61,7 +61,38 @@ def createSDA(info,trainset):
             trainSetImg = visualize.makeImageOfData(trainSet)
             dst = info["dst"].replace("pkl","")+"/train_set.png"
             ensureSaveImage(trainSetImg,dst)
-        preTrainer = list(model.pretrainingFunctions(data,batchSize=batchSize))
+        import optimization
+        def adadelta(params,grads):
+            return optimization.get_adadelta_update(params,grads,0.7,1e-6)
+        opt = adadelta
+        preTrainer = list(model.pretrainingFunctionsWithOptimizer(data,batchSize,opt))
+        #preTrainer = list(model.pretrainingFunctions(data,batchSize=batchSize))
+        assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
+        for i,(trainer,corruptionLevel) in enumerate(zip(preTrainer,corruptionLevels)):
+            for epoch in xrange(modelInfo["pretrainingEpochs"][i]):
+                print 'Pre-training layer %i, epoch %d ' % (i,epoch)
+                trainScores = [trainer(batchIndex,corruptionLevel) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
+                print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),numpy.mean(trainScores)
+                if visualize:
+                    for name,img in visualize.createSdaImages(model,trainset.get_value(borrow=True)):
+                        dst = info["dst"].replace("pkl","")+"/layer%depoch%d/" % (i,epoch) + name
+                        ensureSaveImage(img,dst)
+    return model,trainer
+
+    """
+    def trainer(data):
+        print "training dataShape", data.get_value(borrow=True).shape
+        if visualize:
+            trainSet = data.get_value(borrow=True)
+            trainSetImg = visualize.makeImageOfData(trainSet)
+            dst = info["dst"].replace("pkl","")+"/train_set.png"
+            ensureSaveImage(trainSetImg,dst)
+        import optimizer
+        def adadelta(params,grads):
+            return optimizer.get_adadelta_update(params,grads,0.7,1e-6)
+        opt = adadelta
+        preTrainer = list(model.pretrainingFunctionsWithOptimizer(data,batchSize,opt))
+        #preTrainer = list(model.pretrainingFunctions(data,batchSize=batchSize))
         assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
         for i,(trainer,corruptionLevel,preLearningRate) in enumerate(zip(preTrainer,corruptionLevels,preLearningRates)):
             for epoch in xrange(modelInfo["pretrainingEpochs"][i]):
@@ -75,7 +106,7 @@ def createSDA(info,trainset):
 
 
     return model,trainer
-
+    """
 
 def createDataSet(dataSetInfo):
     return dataSetTable()[dataSetInfo["kind"]](dataSetInfo)
