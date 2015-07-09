@@ -7,6 +7,7 @@
     "numData": 10000
   },
   "model": {
+    "visualize":false,
     "preLearningRates": [0.1, 0.1, 0.1],
     "batchSize": 200,
     "corruptionLevels": [0.0, 0.0, 0.0],

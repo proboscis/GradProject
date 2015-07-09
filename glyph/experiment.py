@@ -34,13 +34,13 @@ def modelToCompressor(info,model):
     if info["model"]["kind"] == "sda" :
         return list(visualize.genCompressors(model))[-1]
 
-def visualizeModel(info,model):
+def visualizeModel(info,model,path):
     if info["model"]["kind"] == "pca":
         print "no visualization for PCA"
     if info["model"]["kind"] == "sda":
         nChannel = 3 if len(info["dataSet"]["shape"]) == 3 else 1
         for name,fig in visualize.sdaLayerImages2(model,nChannel):
-            fig.savefig(resultPath+"/"+name)
+            fig.savefig(path+"/"+name)
 
 def experimentCase(paramPath,resultPath,useCache = True):
     print "experiment param:",paramPath
@@ -80,7 +80,7 @@ def experimentCase(paramPath,resultPath,useCache = True):
     #score = metrics.silhouette_score(compressed, clustering.applyDBSCAN(compressed), metric='euclidean')
     #util.writeFileStr(resultPath+"/score.txt",str(score))
     print "visualize layers"
-    visualizeModel(info,model)
+    visualizeModel(info,model,resultPath)
     print "experiment case done!"
 
 if __name__ == '__main__':

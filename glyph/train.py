@@ -95,6 +95,7 @@ def createSDA(info,trainset):
     """
     
     def trainer(data):
+        import sys
         preLearningRates = modelInfo["preLearningRates"]
         print "training dataShape", data.get_value(borrow=True).shape
         if visualize:
@@ -105,15 +106,29 @@ def createSDA(info,trainset):
         preTrainer = list(model.pretrainingFunctions(data,batchSize=batchSize))
         assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
         for i,(trainer,corruptionLevel,preLearningRate) in enumerate(zip(preTrainer,corruptionLevels,preLearningRates)):
-            for epoch in xrange(modelInfo["pretrainingEpochs"][i]):
-                print 'Pre-training layer %i, epoch %d start with learning rate of %f' % (i,epoch,preLearningRate)
-                trainScores = [trainer(batchIndex,corruptionLevel,preLearningRate) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
-                print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),numpy.mean(trainScores)
+            learningRate = preLearningRate
+            record = [sys.float_info.max]
+            epoch = 0
+            while True:
+                print 'Pre-training layer %i, epoch %d start with learning rate of %f' % (i,epoch,learningRate)
+                trainScores = [trainer(batchIndex,corruptionLevel,learningRate) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
+                score = numpy.mean(trainScores)
+                print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),numpy.mean(score)
                 if visualize:
                     for name,img in visualize.createSdaImages(model,trainset.get_value(borrow=True)):
                         dst = info["dst"].replace("pkl","")+"/layer%depoch%d/" % (i,epoch) + name
                         ensureSaveImage(img,dst)
-
+                diff = numpy.mean(record) - score
+                if  record[-1] - score < 0 or diff < 1:
+                    if learningRate > 0.001:
+                        learningRate *= 0.5
+                    else:
+                        print "training done"
+                        break
+                record.insert(0,score)
+                record = record[:5]
+                epoch += 1
+                
 
     return model,trainer
     
