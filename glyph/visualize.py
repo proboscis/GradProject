@@ -42,6 +42,13 @@ def smallestSquare(area):
     l = max(numbers)
     return l, area/l
 
+def isqrt(n):
+    x = n
+    y = (x + 1) // 2
+    while y < x:
+        x = y
+        y = (x + n // x) // 2
+    return x
 def genCompressors(sda):
     layers = sda.sigmoidLayers
     print "genCompressor(sda),sda.x.shape = ", sda.x.shape
@@ -142,6 +149,61 @@ def convertModelDataToImages(path):
     #save learned features as an image
     sda.dALayers[0].saveLayerImage(folder + "/layer_weight.png",info["dataSet"]["shape"],(10,10))
 
+def imageArray2(data,resolution,tileShape=(10,10)):
+    try:
+        import PIL.Image as Image
+    except ImportError:
+        import Image
+    from utils import tile_raster_images
+    image = Image.fromarray(tile_raster_images(X=self.W.get_value(borrow=True).T,
+                           img_shape=resolution, tile_shape=tileShape,
+                           tile_spacing=(1, 1)))
+    return image
+
+def sdaLayerImages(sda,color=False):
+    #layer weights
+    layers = list(sda.dALayers)
+    if color:
+        first = layers[0]
+        weight = first.W.get_value(borrow=True).T
+        print "first layer shape:",weight.shape
+        fs = weight.shape
+        weight = weight.reshape(fs[0],fs[1]/3,3)
+        weight = weight.swapaxes(1,2)
+        weight = weight.swapaxes(0,1)
+        print "reshaped shape:",weight.shape
+        for c,ch in zip(['r','g','b'],weight):
+            yield ("weight%s.png" % c),util.makeImage(ch,dataResolution(ch),(10,10))
+        layers = layers[1:]
+    for i,layer in enumerate(layers):
+        weight = layer.W.get_value(borrow=True).T
+        resolution = dataResolution(weight)
+        yield ("weight%d.png" % i) , layer.genLayerImage(resolution,(10,10))
+def isqrtSet(n):
+    w = isqrt(n)
+    h = n/w
+    return w,h
+    
+def sdaLayerImages2(sda,nChannel):
+    #layer weights
+    layers = list(sda.dALayers)
+    for i,layer in enumerate(layers):
+        W = layer.W.get_value(borrow =True)
+        shape = W.shape
+        name =("layer %d" % i)
+        nInput,nOutput = shape
+        print name,shape
+        if nChannel == 1:
+            w,h = isqrtSet(nOutput)
+            yield name,imageArray((W.flatten()[:nInput*w*h]).reshape(nInput,w,h))
+        else:
+            elements = nOutput/nChannel
+            w,h = isqrtSet(elements)
+            print w , h
+            print w * h * nChannel
+            yield name,imageArray((W.flatten()[:nInput*w*h*nChannel]).reshape(nInput,w,h,nChannel))
+            
+    
 def createSdaImages(sda,inputs,color=False):
     """
     return Seq[ImageName,Image]
@@ -157,24 +219,8 @@ def createSdaImages(sda,inputs,color=False):
     # for i,recon in enumerate(reconstructors(sda)):
     #     yield ("reconstructed%d.png"%i), makeImageOfData(recon(inputs))
     yield "reconstructed.png",makeImageOfData(reconstructor(sda)(inputs))
-    #layer weights
-    layers = list(sda.dALayers)
-    if color:
-        first = layers[0]
-        weight = first.W.get_value(borrow=True).T
-        print "first layer shape:",weight.shape
-        fs = weight.shape
-        weight = weight.reshape(fs[0],fs[1]/3,3)
-        weight = weight.swapaxes(1,2)
-        weight = weight.swapaxes(0,1)
-        print "reshaped shape:",weight.shape
-        for c,ch in zip(['r','g','b'],weight):
-            yield ("weight0%s.png" % c),util.makeImage(ch,dataResolution(ch),(10,10))
-        layers = layers[1:]
-    for i,layer in enumerate(layers):
-        weight = layer.W.get_value(borrow=True).T
-        resolution = dataResolution(weight)
-        yield ("weight%d.png" % i) , layer.genLayerImage(resolution,(10,10))
+    for pair in sdaLayerImages(sda,color):
+        yield pair
 
 def saveModelImages(modelPath,dstPath,color = False):
     info,sda = util.load(modelPath)
@@ -272,15 +318,27 @@ def MDSPlotTest():
     print x.dtype
     compressed = util.load(resPath+"/compressed.pkl")
     MDSPlots(x,compressed,info.dataSet.shape)
-
-        
-if __name__ == '__main__':
-    import sys
-    fig = MDSPlotTest()
     import matplotlib.pyplot as plt
     fig.savefig()
     print("show figure")
     plt.show()
+
+def sdaImageTest(modelPath):
+    info,model = util.load(modelPath)
+    print info
+    print model
+    shape = info["dataSet"]["shape"]
+    color = len(shape) == 3
+    import matplotlib.pyplot as plt
+    for name,fig in sdaLayerImages2(model,3):
+        fig.show()
+        raw_input()
+        
+    plt.show()
+        
+if __name__ == '__main__':
+    import sys
+    sdaImageTest(sys.argv[1])
     # saveModelImages(sys.argv[1],sys.argv[2],bool(sys.argv[3]))
     # import os
     # models = list(findModels())

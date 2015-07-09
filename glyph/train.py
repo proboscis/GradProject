@@ -69,14 +69,23 @@ def createSDA(info,trainset):
         #preTrainer = list(model.pretrainingFunctions(data,batchSize=batchSize))
         assert len(corruptionLevels) == len(preTrainer) , "given corruption levels do not correspond to the layers!!!"
         for i,(trainer,corruptionLevel) in enumerate(zip(preTrainer,corruptionLevels)):
-            for epoch in xrange(modelInfo["pretrainingEpochs"][i]):
+            epoch = 0
+            prev = 0
+            #for epoch in xrange(modelInfo["pretrainingEpochs"][i]):
+            while(True):
                 print 'Pre-training layer %i, epoch %d ' % (i,epoch)
                 trainScores = [trainer(batchIndex,corruptionLevel) for batchIndex in xrange(data.get_value(borrow=True).shape[0]/batchSize)]
-                print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),numpy.mean(trainScores)
+                meanScore = numpy.mean(trainScores)
+                print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),meanScore
                 if visualize:
                     for name,img in visualize.createSdaImages(model,trainset.get_value(borrow=True)):
                         dst = info["dst"].replace("pkl","")+"/layer%depoch%d/" % (i,epoch) + name
                         ensureSaveImage(img,dst)
+                done = abs(prev-meanScore) < 0.1
+                prev = meanScore
+                epoch += 1
+                if done:
+                    break
     return model,trainer
 
     """
