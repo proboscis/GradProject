@@ -293,7 +293,7 @@ def imageArray(images,row = 5, col = 5,title = "no title"):
             ax.imshow(img,cmap = cm.Greys_r)
     return fig
 
-def MDSPlots(images,compressed):
+def MDSPlots(images,compressed,eps=0.5):
     """
     generator of pyplot figures
     """

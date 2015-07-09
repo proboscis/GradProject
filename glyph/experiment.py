@@ -73,8 +73,9 @@ def experimentCase(paramPath,resultPath,useCache = True):
         print "image shape",images.shape
         print "x shape",x.shape
         print "compressed shape", compressed.shape
-        mdsFig = visualize.MDSPlots(images,compressed)
-        mdsFig.savefig(resultPath+"/layer"+layer+"/mds")
+        for eps in range(0.1,1,0.1):
+            mdsFig = visualize.MDSPlots(images,compressed,eps)
+            mdsFig.savefig(resultPath+"/layer"+layer+("/mds%.1f" % eps))
     #clustering.saveMDSPlots(resultPath+"/mds.png", compressed)
     print "calculate clustering score"
     #score = metrics.silhouette_score(compressed, clustering.applyDBSCAN(compressed), metric='euclidean')
