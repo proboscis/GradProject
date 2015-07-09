@@ -9,6 +9,7 @@
   "model": {
     "visualize":false,
     "batchSize": 500,
+    "preLearningRates": [10,10,1,1,0.1,0.1],
     "corruptionLevels": [0,0,0,0,0,0],
     "hiddenLayerSizes": [9408,9408,2352,1200,300,75],
     "nIn": 2352,

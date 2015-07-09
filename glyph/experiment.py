@@ -30,9 +30,9 @@ def experimentAll():
 
 def modelToCompressor(info,model):
     if info["model"]["kind"] == "pca" :
-        return model.transform
+        return list(model.transform)
     if info["model"]["kind"] == "sda" :
-        return list(visualize.genCompressors(model))[-1]
+        return list(visualize.genCompressors(model))
 
 def visualizeModel(info,model,path):
     if info["model"]["kind"] == "pca":
@@ -58,23 +58,23 @@ def experimentCase(paramPath,resultPath,useCache = True):
     x = x[:numClustering]
     print "create compressor"
     print "compressing input shape:",x.shape
-    compress = modelToCompressor(info,model)
-    compressed = util.loadOrCall(resultPath+"/compressed.pkl",lambda :compress(x),force=not useCache)
-    print "create clustering result images"
+    compressors = modelToCompressor(info,model)
+    for layer, compressor in enumerate(compressors):
+        layer = str(layer)
+        compressed = util.loadOrCall(resultPath+"/layer"+layer+"/compressed.pkl",lambda :compressor(x),force=not useCache)
+        print "create clustering result images"
     #clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
-
-    labels = clustering.applyDBSCAN(compressed)
-    images = x.reshape((numClustering,)+tuple(info["dataSet"]["shape"]))
-    clusterImages = visualize.genClusterFigures(images,labels)
-    for i,fig in enumerate(clusterImages):
-        fig.savefig(resultPath + "/cluster"+str(i))
-    print "create mds distribution image"
-    print "image shape",images.shape
-    print "x shape",x.shape
-    print "compressed shape", compressed.shape
-
-    mdsFig = visualize.MDSPlots(images,compressed)
-    mdsFig.savefig(resultPath+"/mds")
+        labels = clustering.applyDBSCAN(compressed)
+        images = x.reshape((numClustering,)+tuple(info["dataSet"]["shape"]))
+        clusterImages = visualize.genClusterFigures(images,labels)
+        for i,fig in enumerate(clusterImages):
+            fig.savefig(resultPath +"/layer"+layer+ "/cluster"+str(i))
+        print "create mds distribution image"
+        print "image shape",images.shape
+        print "x shape",x.shape
+        print "compressed shape", compressed.shape
+        mdsFig = visualize.MDSPlots(images,compressed)
+        mdsFig.savefig(resultPath+"/layer"+layer+"/mds")
     #clustering.saveMDSPlots(resultPath+"/mds.png", compressed)
     print "calculate clustering score"
     #score = metrics.silhouette_score(compressed, clustering.applyDBSCAN(compressed), metric='euclidean')

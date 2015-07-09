@@ -190,7 +190,7 @@ def sdaLayerImages2(sda,nChannel):
     for i,layer in enumerate(layers):
         W = layer.W.get_value(borrow =True).T
         shape = W.shape
-        name =("layer %d" % i)
+        name =("layer%d" % i)
         nInput,nOutput = shape
         print name,shape
         if nChannel == 1:
@@ -237,6 +237,7 @@ def imgScatter(coords,images):
     images: seq[Image]
     """
     from   matplotlib.offsetbox import OffsetImage,AnnotationBbox
+    print "imageScatter:",images.shape
     offsetImages = map(lambda i: OffsetImage(i,zoom=1),images)
     import matplotlib.pyplot as plt
     fig = plt.figure()
@@ -279,7 +280,7 @@ def imageArray(images,row = 5, col = 5,title = "no title"):
     make a image matrix figure.
     """
     from matplotlib import pyplot as plt, cm as cm
-    fig = plt.figure(title)
+    fig = plt.figure()
     for i, img in enumerate(images[:row*col]):
         ax = fig.add_subplot(row,col,i+1)
         fig.subplots_adjust(hspace = 0.001,wspace = 0.001)
@@ -300,10 +301,11 @@ def MDSPlots(images,compressed):
     mds = MDS(n_components = 2,dissimilarity = "precomputed")
     print "calculating similarities"
     from scipy.spatial.distance import squareform, pdist
-#    similarities = squareform(pdist(compressed,'mahalanobis'))
+    #similarities = squareform(pdist(compressed,'mahalanobis'))
     similarities = squareform(pdist(compressed,'euclidean'))
     print "fitting mds"
     coords = mds.fit_transform(similarities)
+
     import visualize as viz
     print "create figure"
     fig = viz.imgScatter(coords,images)
