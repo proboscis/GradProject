@@ -64,7 +64,7 @@ class DenoisingAutoEncoder():
         return self.theanoRng.binomial(size=input.shape,n=1,p=1-corruptionLevel,dtype=theano.config.floatX) * input
 
     def costFunctionAndUpdates(self,corruptionLevel,learningRate):
-        cost,param,gparam = self.costParamGrads(corruptionLevel)
+        cost,param,gparams = self.costParamGrads(corruptionLevel)
         updates = [
             (param,param - learningRate*gparam)
             for param,gparam in zip(self.params, gparams)

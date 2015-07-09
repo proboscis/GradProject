@@ -5,6 +5,7 @@ import train
 import visualize
 import numpy
 import matplotlib
+matplotlib.use('Agg')
 import json
 import clustering
 from sklearn.cluster import KMeans
@@ -33,23 +34,24 @@ def modelToCompressor(info,model):
     if info["model"]["kind"] == "sda" :
         return list(visualize.genCompressors(model))[-1]
 
-def experimentCase(paramPath,resultPath):
+def experimentCase(paramPath,resultPath,useCache = True):
     print "experiment param:",paramPath
     print "experiment result:",resultPath
+    print "useCache:",useCache
     print "load param"
     info = json.loads(util.fileString(paramPath))
     print "create model"
     print (info)
-    info,model = train.evalModel(info)
+    info,model = train.evalModel(info,useCache)
     print "load dataset"
-    info["dataSet"]["numData"] = 1000
-    x = util.loadOrCall(resultPath+"/x.pkl",lambda :train.createDataSet(info["dataSet"]).get_value(borrow=True),force = True)
     numClustering = 300
+    info["dataSet"]["numData"] = numClustering
+    x = util.loadOrCall(resultPath+"/x.pkl",lambda :train.createDataSet(info["dataSet"]).get_value(borrow=True),force = not useCache)
     x = x[:numClustering]
     print "create compressor"
     print "compressing input shape:",x.shape
     compress = modelToCompressor(info,model)
-    compressed = util.loadOrCall(resultPath+"/compressed.pkl",lambda :compress(x),force=True)
+    compressed = util.loadOrCall(resultPath+"/compressed.pkl",lambda :compress(x),force=not useCache)
     print "create clustering result images"
     #clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
 
@@ -69,12 +71,17 @@ def experimentCase(paramPath,resultPath):
     print "calculate clustering score"
     #score = metrics.silhouette_score(compressed, clustering.applyDBSCAN(compressed), metric='euclidean')
     #util.writeFileStr(resultPath+"/score.txt",str(score))
+
+    print "visualize layers"
+    nChannel = 3 if len(info["dataSet"]["shape"]) == 3 else 1
+    for name,fig in visualize.sdaLayerImages2(model,nChannel):
+        fig.savefig(resultPath+"/"+name)
     print "experiment case done!"
 
 if __name__ == '__main__':
     import sys
     args = sys.argv
-    experimentCase(args[1],args[2])
+    experimentCase(args[1],args[2],args[3] == "True" if len(args) > 3 else True)
     #experimentCase("../params/tiny.json","../experiments/tiny")
     #experimentCase("../params/newsda.json","../experiments/newsda")
     #experimentCase("../params/newsda_mnist.json","../experiments/newsda_mnist")

@@ -1,0 +1,21 @@
+{
+  "dst": "../models/mnist/sda_28x28_new.pkl",
+  "dataSet": {
+    "kind": "mnist",
+    "path": "../data/mnist/28x28",
+    "shape": [28,28],
+    "numData": 120000
+  },
+  "model": {
+    "visualize":false,
+    "preLearningRates": [0.1, 0.1, 0.01,0.01,0.001,0.001],
+    "batchSize": 500,
+    "corruptionLevels": [0,0,0,0,0,0],
+    "hiddenLayerSizes": [3136,3136,784,400,100,10],
+    "nIn": 784,
+    "randomSeed": 1234,
+    "pretrainingEpochs": [100,100,100,100,100,100],
+    "kind": "sda",
+    "nOut": 10
+  }
+}

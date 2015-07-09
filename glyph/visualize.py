@@ -188,7 +188,7 @@ def sdaLayerImages2(sda,nChannel):
     #layer weights
     layers = list(sda.dALayers)
     for i,layer in enumerate(layers):
-        W = layer.W.get_value(borrow =True)
+        W = layer.W.get_value(borrow =True).T
         shape = W.shape
         name =("layer %d" % i)
         nInput,nOutput = shape
@@ -286,7 +286,10 @@ def imageArray(images,row = 5, col = 5,title = "no title"):
         ax.set_xticklabels(())
         ax.set_yticklabels(())
         ax.tick_params(labelbottom='off',labelleft='off',labelright='off',labeltop='off')
-        ax.imshow(img)
+        if len(img.shape) >= 3 :
+            ax.imshow(img)
+        else:
+            ax.imshow(img,cmap = cm.Greys_r)
     return fig
 
 def MDSPlots(images,compressed):
