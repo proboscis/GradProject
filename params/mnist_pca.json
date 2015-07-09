@@ -6,6 +6,7 @@
     "shape": [28, 28]
   },
   "model": {
-    "kind": "pca"
+    "kind": "pca",
+      "nOut":25
   }
 }

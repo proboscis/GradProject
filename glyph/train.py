@@ -19,7 +19,7 @@ def createModel(info,trainset):
 def createPCA(info,trainset):
     import sklearn
     from sklearn.decomposition import PCA
-    pca = PCA(n_components=10)
+    pca = PCA(n_components=info["model"].get("nOut",10))
     def fit(x):
         t = type(x)
         if(t == 'numpy.ndarray'):
