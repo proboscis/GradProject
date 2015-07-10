@@ -1,0 +1,729 @@
+Using gpu device 0: GeForce GTX TITAN Black
+experiment param: ../params/newsda_mnist2.json
+experiment result: ../experiments/last_mnist
+useCache: False
+load param
+create model
+{u'dst': u'../models/mnist/latestsda.pkl', u'model': {u'kind': u'sda', u'visualize': False, u'nIn': 784, u'batchSize': 500, u'corruptionLevels': [0, 0, 0, 0, 0, 0], u'hiddenLayerSizes': [3136, 3136, 784, 400, 100, 10], u'preLearningRates': [0.1, 0.1, 0.01, 0.01, 0.001, 0.001], u'randomSeed': 1234, u'pretrainingEpochs': [100, 100, 100, 100, 100, 100], u'nOut': 10}, u'dataSet': {u'path': u'../data/mnist/28x28', u'kind': u'mnist', u'shape': [28, 28], u'numData': 120000}}
+evalModel cache: False
+createMnistDataSet: {u'path': u'../data/mnist/28x28', u'kind': u'mnist', u'shape': [28, 28], u'numData': 120000}
+... loading data
+data info =======
+(10000, 784) (10000,)
+<type 'numpy.ndarray'> <type 'numpy.ndarray'>
+end data info====
+data info =======
+(10000, 784) (10000,)
+<type 'numpy.ndarray'> <type 'numpy.ndarray'>
+end data info====
+data info =======
+(50000, 784) (50000,)
+<type 'numpy.ndarray'> <type 'numpy.ndarray'>
+end data info====
+created [(<CudaNdarrayType(float32, matrix)>, Elemwise{Cast{int32}}.0), (<CudaNdarrayType(float32, matrix)>, Elemwise{Cast{int32}}.0), (<CudaNdarrayType(float32, matrix)>, Elemwise{Cast{int32}}.0)]
+created sda with layer shapes below.
+layersize: (784, 3136)
+layersize: (3136, 3136)
+layersize: (3136, 784)
+layersize: (784, 400)
+layersize: (400, 100)
+layersize: (100, 10)
+batchSize 500
+training dataShape (50000, 784)
+Pre-training layer 0, epoch 0 start with learning rate of 0.100000
+Pre-training layer 0, epoch 0, cost  132.174
+Pre-training layer 0, epoch 1 start with learning rate of 0.100000
+Pre-training layer 0, epoch 1, cost  66.3766
+Pre-training layer 0, epoch 2 start with learning rate of 0.100000
+Pre-training layer 0, epoch 2, cost  60.8479
+Pre-training layer 0, epoch 3 start with learning rate of 0.100000
+Pre-training layer 0, epoch 3, cost  57.8349
+Pre-training layer 0, epoch 4 start with learning rate of 0.100000
+Pre-training layer 0, epoch 4, cost  57.1817
+Pre-training layer 0, epoch 5 start with learning rate of 0.100000
+Pre-training layer 0, epoch 5, cost  55.8463
+Pre-training layer 0, epoch 6 start with learning rate of 0.100000
+Pre-training layer 0, epoch 6, cost  55.6707
+Pre-training layer 0, epoch 7 start with learning rate of 0.100000
+Pre-training layer 0, epoch 7, cost  55.1143
+Pre-training layer 0, epoch 8 start with learning rate of 0.100000
+Pre-training layer 0, epoch 8, cost  55.1406
+Pre-training layer 0, epoch 9 start with learning rate of 0.100000
+Pre-training layer 0, epoch 9, cost  54.3638
+Pre-training layer 0, epoch 10 start with learning rate of 0.100000
+Pre-training layer 0, epoch 10, cost  54.3944
+Pre-training layer 0, epoch 11 start with learning rate of 0.050000
+Pre-training layer 0, epoch 11, cost  52.8423
+Pre-training layer 0, epoch 12 start with learning rate of 0.050000
+Pre-training layer 0, epoch 12, cost  52.7461
+Pre-training layer 0, epoch 13 start with learning rate of 0.050000
+Pre-training layer 0, epoch 13, cost  52.67
+Pre-training layer 0, epoch 14 start with learning rate of 0.050000
+Pre-training layer 0, epoch 14, cost  52.6046
+Pre-training layer 0, epoch 15 start with learning rate of 0.025000
+Pre-training layer 0, epoch 15, cost  52.5477
+Pre-training layer 0, epoch 16 start with learning rate of 0.012500
+Pre-training layer 0, epoch 16, cost  52.5213
+Pre-training layer 0, epoch 17 start with learning rate of 0.006250
+Pre-training layer 0, epoch 17, cost  52.5085
+Pre-training layer 0, epoch 18 start with learning rate of 0.003125
+Pre-training layer 0, epoch 18, cost  52.5021
+Pre-training layer 0, epoch 19 start with learning rate of 0.001563
+Pre-training layer 0, epoch 19, cost  52.4989
+Pre-training layer 0, epoch 20 start with learning rate of 0.000781
+Pre-training layer 0, epoch 20, cost  52.4973
+training done
+Pre-training layer 1, epoch 0 start with learning rate of 0.100000
+Pre-training layer 1, epoch 0, cost  1583.31
+Pre-training layer 1, epoch 1 start with learning rate of 0.100000
+Pre-training layer 1, epoch 1, cost  1433.65
+Pre-training layer 1, epoch 2 start with learning rate of 0.100000
+Pre-training layer 1, epoch 2, cost  1412.34
+Pre-training layer 1, epoch 3 start with learning rate of 0.100000
+Pre-training layer 1, epoch 3, cost  1401.73
+Pre-training layer 1, epoch 4 start with learning rate of 0.100000
+Pre-training layer 1, epoch 4, cost  1394.53
+Pre-training layer 1, epoch 5 start with learning rate of 0.100000
+Pre-training layer 1, epoch 5, cost  1390.09
+Pre-training layer 1, epoch 6 start with learning rate of 0.100000
+Pre-training layer 1, epoch 6, cost  1386.23
+Pre-training layer 1, epoch 7 start with learning rate of 0.100000
+Pre-training layer 1, epoch 7, cost  1383.4
+Pre-training layer 1, epoch 8 start with learning rate of 0.100000
+Pre-training layer 1, epoch 8, cost  1381.47
+Pre-training layer 1, epoch 9 start with learning rate of 0.100000
+Pre-training layer 1, epoch 9, cost  1379.4
+Pre-training layer 1, epoch 10 start with learning rate of 0.100000
+Pre-training layer 1, epoch 10, cost  1378.05
+Pre-training layer 1, epoch 11 start with learning rate of 0.100000
+Pre-training layer 1, epoch 11, cost  1376.88
+Pre-training layer 1, epoch 12 start with learning rate of 0.100000
+Pre-training layer 1, epoch 12, cost  1375.33
+Pre-training layer 1, epoch 13 start with learning rate of 0.100000
+Pre-training layer 1, epoch 13, cost  1374.52
+Pre-training layer 1, epoch 14 start with learning rate of 0.100000
+Pre-training layer 1, epoch 14, cost  1373.93
+Pre-training layer 1, epoch 15 start with learning rate of 0.100000
+Pre-training layer 1, epoch 15, cost  1372.69
+Pre-training layer 1, epoch 16 start with learning rate of 0.100000
+Pre-training layer 1, epoch 16, cost  1372.14
+Pre-training layer 1, epoch 17 start with learning rate of 0.100000
+Pre-training layer 1, epoch 17, cost  1371.27
+Pre-training layer 1, epoch 18 start with learning rate of 0.100000
+Pre-training layer 1, epoch 18, cost  1370.84
+Pre-training layer 1, epoch 19 start with learning rate of 0.100000
+Pre-training layer 1, epoch 19, cost  1370.35
+Pre-training layer 1, epoch 20 start with learning rate of 0.100000
+Pre-training layer 1, epoch 20, cost  1369.62
+Pre-training layer 1, epoch 21 start with learning rate of 0.100000
+Pre-training layer 1, epoch 21, cost  1369.22
+Pre-training layer 1, epoch 22 start with learning rate of 0.100000
+Pre-training layer 1, epoch 22, cost  1368.62
+Pre-training layer 1, epoch 23 start with learning rate of 0.100000
+Pre-training layer 1, epoch 23, cost  1368.19
+Pre-training layer 1, epoch 24 start with learning rate of 0.100000
+Pre-training layer 1, epoch 24, cost  1367.91
+Pre-training layer 1, epoch 25 start with learning rate of 0.100000
+Pre-training layer 1, epoch 25, cost  1367.47
+Pre-training layer 1, epoch 26 start with learning rate of 0.100000
+Pre-training layer 1, epoch 26, cost  1367.13
+Pre-training layer 1, epoch 27 start with learning rate of 0.100000
+Pre-training layer 1, epoch 27, cost  1366.49
+Pre-training layer 1, epoch 28 start with learning rate of 0.100000
+Pre-training layer 1, epoch 28, cost  1366.27
+Pre-training layer 1, epoch 29 start with learning rate of 0.100000
+Pre-training layer 1, epoch 29, cost  1365.85
+Pre-training layer 1, epoch 30 start with learning rate of 0.100000
+Pre-training layer 1, epoch 30, cost  1365.53
+Pre-training layer 1, epoch 31 start with learning rate of 0.100000
+Pre-training layer 1, epoch 31, cost  1364.96
+Pre-training layer 1, epoch 32 start with learning rate of 0.100000
+Pre-training layer 1, epoch 32, cost  1364.96
+Pre-training layer 1, epoch 33 start with learning rate of 0.050000
+Pre-training layer 1, epoch 33, cost  1358.29
+Pre-training layer 1, epoch 34 start with learning rate of 0.050000
+Pre-training layer 1, epoch 34, cost  1357.76
+Pre-training layer 1, epoch 35 start with learning rate of 0.050000
+Pre-training layer 1, epoch 35, cost  1357.55
+Pre-training layer 1, epoch 36 start with learning rate of 0.050000
+Pre-training layer 1, epoch 36, cost  1357.4
+Pre-training layer 1, epoch 37 start with learning rate of 0.050000
+Pre-training layer 1, epoch 37, cost  1357.22
+Pre-training layer 1, epoch 38 start with learning rate of 0.050000
+Pre-training layer 1, epoch 38, cost  1357.15
+Pre-training layer 1, epoch 39 start with learning rate of 0.025000
+Pre-training layer 1, epoch 39, cost  1356.63
+Pre-training layer 1, epoch 40 start with learning rate of 0.012500
+Pre-training layer 1, epoch 40, cost  1356.54
+Pre-training layer 1, epoch 41 start with learning rate of 0.006250
+Pre-training layer 1, epoch 41, cost  1356.5
+Pre-training layer 1, epoch 42 start with learning rate of 0.003125
+Pre-training layer 1, epoch 42, cost  1356.48
+Pre-training layer 1, epoch 43 start with learning rate of 0.001563
+Pre-training layer 1, epoch 43, cost  1356.47
+Pre-training layer 1, epoch 44 start with learning rate of 0.000781
+Pre-training layer 1, epoch 44, cost  1356.46
+training done
+Pre-training layer 2, epoch 0 start with learning rate of 0.010000
+Pre-training layer 2, epoch 0, cost  267.994
+Pre-training layer 2, epoch 1 start with learning rate of 0.010000
+Pre-training layer 2, epoch 1, cost  170.485
+Pre-training layer 2, epoch 2 start with learning rate of 0.010000
+Pre-training layer 2, epoch 2, cost  159.292
+Pre-training layer 2, epoch 3 start with learning rate of 0.010000
+Pre-training layer 2, epoch 3, cost  152.992
+Pre-training layer 2, epoch 4 start with learning rate of 0.010000
+Pre-training layer 2, epoch 4, cost  148.662
+Pre-training layer 2, epoch 5 start with learning rate of 0.010000
+Pre-training layer 2, epoch 5, cost  145.412
+Pre-training layer 2, epoch 6 start with learning rate of 0.010000
+Pre-training layer 2, epoch 6, cost  142.847
+Pre-training layer 2, epoch 7 start with learning rate of 0.010000
+Pre-training layer 2, epoch 7, cost  140.757
+Pre-training layer 2, epoch 8 start with learning rate of 0.010000
+Pre-training layer 2, epoch 8, cost  139.012
+Pre-training layer 2, epoch 9 start with learning rate of 0.010000
+Pre-training layer 2, epoch 9, cost  137.528
+Pre-training layer 2, epoch 10 start with learning rate of 0.010000
+Pre-training layer 2, epoch 10, cost  136.247
+Pre-training layer 2, epoch 11 start with learning rate of 0.010000
+Pre-training layer 2, epoch 11, cost  135.13
+Pre-training layer 2, epoch 12 start with learning rate of 0.010000
+Pre-training layer 2, epoch 12, cost  134.145
+Pre-training layer 2, epoch 13 start with learning rate of 0.010000
+Pre-training layer 2, epoch 13, cost  133.269
+Pre-training layer 2, epoch 14 start with learning rate of 0.010000
+Pre-training layer 2, epoch 14, cost  132.484
+Pre-training layer 2, epoch 15 start with learning rate of 0.010000
+Pre-training layer 2, epoch 15, cost  131.778
+Pre-training layer 2, epoch 16 start with learning rate of 0.010000
+Pre-training layer 2, epoch 16, cost  131.138
+Pre-training layer 2, epoch 17 start with learning rate of 0.010000
+Pre-training layer 2, epoch 17, cost  130.556
+Pre-training layer 2, epoch 18 start with learning rate of 0.010000
+Pre-training layer 2, epoch 18, cost  130.024
+Pre-training layer 2, epoch 19 start with learning rate of 0.010000
+Pre-training layer 2, epoch 19, cost  129.536
+Pre-training layer 2, epoch 20 start with learning rate of 0.010000
+Pre-training layer 2, epoch 20, cost  129.088
+Pre-training layer 2, epoch 21 start with learning rate of 0.010000
+Pre-training layer 2, epoch 21, cost  128.673
+Pre-training layer 2, epoch 22 start with learning rate of 0.010000
+Pre-training layer 2, epoch 22, cost  128.29
+Pre-training layer 2, epoch 23 start with learning rate of 0.010000
+Pre-training layer 2, epoch 23, cost  127.935
+Pre-training layer 2, epoch 24 start with learning rate of 0.010000
+Pre-training layer 2, epoch 24, cost  127.605
+Pre-training layer 2, epoch 25 start with learning rate of 0.010000
+Pre-training layer 2, epoch 25, cost  127.297
+Pre-training layer 2, epoch 26 start with learning rate of 0.010000
+Pre-training layer 2, epoch 26, cost  127.01
+Pre-training layer 2, epoch 27 start with learning rate of 0.005000
+Pre-training layer 2, epoch 27, cost  126.801
+Pre-training layer 2, epoch 28 start with learning rate of 0.002500
+Pre-training layer 2, epoch 28, cost  126.701
+Pre-training layer 2, epoch 29 start with learning rate of 0.001250
+Pre-training layer 2, epoch 29, cost  126.652
+Pre-training layer 2, epoch 30 start with learning rate of 0.000625
+Pre-training layer 2, epoch 30, cost  126.628
+training done
+Pre-training layer 3, epoch 0 start with learning rate of 0.010000
+Pre-training layer 3, epoch 0, cost  488.96
+Pre-training layer 3, epoch 1 start with learning rate of 0.010000
+Pre-training layer 3, epoch 1, cost  462.166
+Pre-training layer 3, epoch 2 start with learning rate of 0.010000
+Pre-training layer 3, epoch 2, cost  451.206
+Pre-training layer 3, epoch 3 start with learning rate of 0.010000
+Pre-training layer 3, epoch 3, cost  445.001
+Pre-training layer 3, epoch 4 start with learning rate of 0.010000
+Pre-training layer 3, epoch 4, cost  440.906
+Pre-training layer 3, epoch 5 start with learning rate of 0.010000
+Pre-training layer 3, epoch 5, cost  437.934
+Pre-training layer 3, epoch 6 start with learning rate of 0.010000
+Pre-training layer 3, epoch 6, cost  435.647
+Pre-training layer 3, epoch 7 start with learning rate of 0.010000
+Pre-training layer 3, epoch 7, cost  433.816
+Pre-training layer 3, epoch 8 start with learning rate of 0.010000
+Pre-training layer 3, epoch 8, cost  432.31
+Pre-training layer 3, epoch 9 start with learning rate of 0.010000
+Pre-training layer 3, epoch 9, cost  431.046
+Pre-training layer 3, epoch 10 start with learning rate of 0.010000
+Pre-training layer 3, epoch 10, cost  429.97
+Pre-training layer 3, epoch 11 start with learning rate of 0.010000
+Pre-training layer 3, epoch 11, cost  429.041
+Pre-training layer 3, epoch 12 start with learning rate of 0.010000
+Pre-training layer 3, epoch 12, cost  428.231
+Pre-training layer 3, epoch 13 start with learning rate of 0.010000
+Pre-training layer 3, epoch 13, cost  427.519
+Pre-training layer 3, epoch 14 start with learning rate of 0.010000
+Pre-training layer 3, epoch 14, cost  426.888
+Pre-training layer 3, epoch 15 start with learning rate of 0.010000
+Pre-training layer 3, epoch 15, cost  426.324
+Pre-training layer 3, epoch 16 start with learning rate of 0.010000
+Pre-training layer 3, epoch 16, cost  425.818
+Pre-training layer 3, epoch 17 start with learning rate of 0.010000
+Pre-training layer 3, epoch 17, cost  425.36
+Pre-training layer 3, epoch 18 start with learning rate of 0.010000
+Pre-training layer 3, epoch 18, cost  424.945
+Pre-training layer 3, epoch 19 start with learning rate of 0.010000
+Pre-training layer 3, epoch 19, cost  424.566
+Pre-training layer 3, epoch 20 start with learning rate of 0.010000
+Pre-training layer 3, epoch 20, cost  424.219
+Pre-training layer 3, epoch 21 start with learning rate of 0.010000
+Pre-training layer 3, epoch 21, cost  423.9
+Pre-training layer 3, epoch 22 start with learning rate of 0.010000
+Pre-training layer 3, epoch 22, cost  423.605
+Pre-training layer 3, epoch 23 start with learning rate of 0.005000
+Pre-training layer 3, epoch 23, cost  423.391
+Pre-training layer 3, epoch 24 start with learning rate of 0.002500
+Pre-training layer 3, epoch 24, cost  423.288
+Pre-training layer 3, epoch 25 start with learning rate of 0.001250
+Pre-training layer 3, epoch 25, cost  423.238
+Pre-training layer 3, epoch 26 start with learning rate of 0.000625
+Pre-training layer 3, epoch 26, cost  423.213
+training done
+Pre-training layer 4, epoch 0 start with learning rate of 0.001000
+Pre-training layer 4, epoch 0, cost  295.134
+Pre-training layer 4, epoch 1 start with learning rate of 0.001000
+Pre-training layer 4, epoch 1, cost  261.995
+Pre-training layer 4, epoch 2 start with learning rate of 0.001000
+Pre-training layer 4, epoch 2, cost  254.398
+Pre-training layer 4, epoch 3 start with learning rate of 0.001000
+Pre-training layer 4, epoch 3, cost  250.212
+Pre-training layer 4, epoch 4 start with learning rate of 0.001000
+Pre-training layer 4, epoch 4, cost  247.569
+Pre-training layer 4, epoch 5 start with learning rate of 0.001000
+Pre-training layer 4, epoch 5, cost  245.748
+Pre-training layer 4, epoch 6 start with learning rate of 0.001000
+Pre-training layer 4, epoch 6, cost  244.326
+Pre-training layer 4, epoch 7 start with learning rate of 0.001000
+Pre-training layer 4, epoch 7, cost  243.085
+Pre-training layer 4, epoch 8 start with learning rate of 0.001000
+Pre-training layer 4, epoch 8, cost  241.922
+Pre-training layer 4, epoch 9 start with learning rate of 0.001000
+Pre-training layer 4, epoch 9, cost  240.795
+Pre-training layer 4, epoch 10 start with learning rate of 0.001000
+Pre-training layer 4, epoch 10, cost  239.686
+Pre-training layer 4, epoch 11 start with learning rate of 0.001000
+Pre-training layer 4, epoch 11, cost  238.593
+Pre-training layer 4, epoch 12 start with learning rate of 0.001000
+Pre-training layer 4, epoch 12, cost  237.517
+Pre-training layer 4, epoch 13 start with learning rate of 0.001000
+Pre-training layer 4, epoch 13, cost  236.46
+Pre-training layer 4, epoch 14 start with learning rate of 0.001000
+Pre-training layer 4, epoch 14, cost  235.423
+Pre-training layer 4, epoch 15 start with learning rate of 0.001000
+Pre-training layer 4, epoch 15, cost  234.41
+Pre-training layer 4, epoch 16 start with learning rate of 0.001000
+Pre-training layer 4, epoch 16, cost  233.422
+Pre-training layer 4, epoch 17 start with learning rate of 0.001000
+Pre-training layer 4, epoch 17, cost  232.461
+Pre-training layer 4, epoch 18 start with learning rate of 0.001000
+Pre-training layer 4, epoch 18, cost  231.528
+Pre-training layer 4, epoch 19 start with learning rate of 0.001000
+Pre-training layer 4, epoch 19, cost  230.624
+Pre-training layer 4, epoch 20 start with learning rate of 0.001000
+Pre-training layer 4, epoch 20, cost  229.749
+Pre-training layer 4, epoch 21 start with learning rate of 0.001000
+Pre-training layer 4, epoch 21, cost  228.903
+Pre-training layer 4, epoch 22 start with learning rate of 0.001000
+Pre-training layer 4, epoch 22, cost  228.086
+Pre-training layer 4, epoch 23 start with learning rate of 0.001000
+Pre-training layer 4, epoch 23, cost  227.297
+Pre-training layer 4, epoch 24 start with learning rate of 0.001000
+Pre-training layer 4, epoch 24, cost  226.536
+Pre-training layer 4, epoch 25 start with learning rate of 0.001000
+Pre-training layer 4, epoch 25, cost  225.802
+Pre-training layer 4, epoch 26 start with learning rate of 0.001000
+Pre-training layer 4, epoch 26, cost  225.095
+Pre-training layer 4, epoch 27 start with learning rate of 0.001000
+Pre-training layer 4, epoch 27, cost  224.414
+Pre-training layer 4, epoch 28 start with learning rate of 0.001000
+Pre-training layer 4, epoch 28, cost  223.758
+Pre-training layer 4, epoch 29 start with learning rate of 0.001000
+Pre-training layer 4, epoch 29, cost  223.125
+Pre-training layer 4, epoch 30 start with learning rate of 0.001000
+Pre-training layer 4, epoch 30, cost  222.515
+Pre-training layer 4, epoch 31 start with learning rate of 0.001000
+Pre-training layer 4, epoch 31, cost  221.927
+Pre-training layer 4, epoch 32 start with learning rate of 0.001000
+Pre-training layer 4, epoch 32, cost  221.36
+Pre-training layer 4, epoch 33 start with learning rate of 0.001000
+Pre-training layer 4, epoch 33, cost  220.813
+Pre-training layer 4, epoch 34 start with learning rate of 0.001000
+Pre-training layer 4, epoch 34, cost  220.285
+Pre-training layer 4, epoch 35 start with learning rate of 0.001000
+Pre-training layer 4, epoch 35, cost  219.775
+Pre-training layer 4, epoch 36 start with learning rate of 0.001000
+Pre-training layer 4, epoch 36, cost  219.282
+Pre-training layer 4, epoch 37 start with learning rate of 0.001000
+Pre-training layer 4, epoch 37, cost  218.806
+Pre-training layer 4, epoch 38 start with learning rate of 0.001000
+Pre-training layer 4, epoch 38, cost  218.345
+Pre-training layer 4, epoch 39 start with learning rate of 0.001000
+Pre-training layer 4, epoch 39, cost  217.899
+Pre-training layer 4, epoch 40 start with learning rate of 0.001000
+Pre-training layer 4, epoch 40, cost  217.468
+Pre-training layer 4, epoch 41 start with learning rate of 0.001000
+Pre-training layer 4, epoch 41, cost  217.05
+Pre-training layer 4, epoch 42 start with learning rate of 0.001000
+Pre-training layer 4, epoch 42, cost  216.645
+Pre-training layer 4, epoch 43 start with learning rate of 0.001000
+Pre-training layer 4, epoch 43, cost  216.253
+Pre-training layer 4, epoch 44 start with learning rate of 0.001000
+Pre-training layer 4, epoch 44, cost  215.872
+Pre-training layer 4, epoch 45 start with learning rate of 0.001000
+Pre-training layer 4, epoch 45, cost  215.502
+Pre-training layer 4, epoch 46 start with learning rate of 0.001000
+Pre-training layer 4, epoch 46, cost  215.143
+Pre-training layer 4, epoch 47 start with learning rate of 0.001000
+Pre-training layer 4, epoch 47, cost  214.794
+Pre-training layer 4, epoch 48 start with learning rate of 0.001000
+Pre-training layer 4, epoch 48, cost  214.455
+Pre-training layer 4, epoch 49 start with learning rate of 0.001000
+Pre-training layer 4, epoch 49, cost  214.126
+Pre-training layer 4, epoch 50 start with learning rate of 0.001000
+Pre-training layer 4, epoch 50, cost  213.805
+training done
+Pre-training layer 5, epoch 0 start with learning rate of 0.001000
+Pre-training layer 5, epoch 0, cost  75.1879
+Pre-training layer 5, epoch 1 start with learning rate of 0.001000
+Pre-training layer 5, epoch 1, cost  71.6821
+Pre-training layer 5, epoch 2 start with learning rate of 0.001000
+Pre-training layer 5, epoch 2, cost  69.776
+Pre-training layer 5, epoch 3 start with learning rate of 0.001000
+Pre-training layer 5, epoch 3, cost  68.6766
+Pre-training layer 5, epoch 4 start with learning rate of 0.001000
+Pre-training layer 5, epoch 4, cost  67.9746
+Pre-training layer 5, epoch 5 start with learning rate of 0.001000
+Pre-training layer 5, epoch 5, cost  67.469
+Pre-training layer 5, epoch 6 start with learning rate of 0.001000
+Pre-training layer 5, epoch 6, cost  67.0839
+Pre-training layer 5, epoch 7 start with learning rate of 0.001000
+Pre-training layer 5, epoch 7, cost  66.7818
+Pre-training layer 5, epoch 8 start with learning rate of 0.001000
+Pre-training layer 5, epoch 8, cost  66.5351
+Pre-training layer 5, epoch 9 start with learning rate of 0.001000
+Pre-training layer 5, epoch 9, cost  66.3236
+training done
+saved cache: ../models/mnist/latestsda.pkl
+({u'dst': u'../models/mnist/latestsda.pkl', u'model': {u'kind': u'sda', u'visualize': False, u'nIn': 784, u'batchSize': 500, u'corruptionLevels': [0, 0, 0, 0, 0, 0], u'hiddenLayerSizes': [3136, 3136, 784, 400, 100, 10], u'preLearningRates': [0.1, 0.1, 0.01, 0.01, 0.001, 0.001], u'randomSeed': 1234, u'pretrainingEpochs': [100, 100, 100, 100, 100, 100], u'nOut': 10}, u'dataSet': {u'path': u'../data/mnist/28x28', u'kind': u'mnist', u'shape': [28, 28], u'numData': 120000}}, <sda.StackedDenoisingAutoencoder instance at 0x7f2ec5ad5710>)
+load dataset
+createMnistDataSet: {u'path': u'../data/mnist/28x28', u'kind': u'mnist', u'shape': [28, 28], u'numData': 300}
+... loading data
+data info =======
+(10000, 784) (10000,)
+<type 'numpy.ndarray'> <type 'numpy.ndarray'>
+end data info====
+data info =======
+(10000, 784) (10000,)
+<type 'numpy.ndarray'> <type 'numpy.ndarray'>
+end data info====
+data info =======
+(50000, 784) (50000,)
+<type 'numpy.ndarray'> <type 'numpy.ndarray'>
+end data info====
+created [(<CudaNdarrayType(float32, matrix)>, Elemwise{Cast{int32}}.0), (<CudaNdarrayType(float32, matrix)>, Elemwise{Cast{int32}}.0), (<CudaNdarrayType(float32, matrix)>, Elemwise{Cast{int32}}.0)]
+saved cache: ../experiments/last_mnist/x.pkl
+create compressor
+compressing input shape: (300, 784)
+genCompressor(sda),sda.x.shape =  Shape.0
+saved cache: ../experiments/last_mnist/layer0/compressed.pkl
+create clustering result images
+clustering eps: 0.1
+input shape: (300, 28, 28)
+clustering eps: 0.2
+input shape: (300, 28, 28)
+clustering eps: 0.3
+input shape: (300, 28, 28)
+clustering eps: 0.4
+input shape: (300, 28, 28)
+clustering eps: 0.5
+input shape: (300, 28, 28)
+clustering eps: 0.6
+input shape: (300, 28, 28)
+clustering eps: 0.7
+input shape: (300, 28, 28)
+clustering eps: 0.8
+input shape: (300, 28, 28)
+clustering eps: 0.9
+input shape: (300, 28, 28)
+clustering eps: 1.0
+input shape: (300, 28, 28)
+clustering eps: 1.1
+input shape: (300, 28, 28)
+clustering eps: 1.2
+input shape: (300, 28, 28)
+clustering eps: 1.3
+input shape: (300, 28, 28)
+clustering eps: 1.4
+input shape: (300, 28, 28)
+clustering eps: 1.5
+input shape: (300, 28, 28)
+clustering eps: 1.6
+input shape: (300, 28, 28)
+clustering eps: 1.7
+input shape: (300, 28, 28)
+clustering eps: 1.8
+input shape: (300, 28, 28)
+clustering eps: 1.9
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 3136)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist/layer1/compressed.pkl
+create clustering result images
+clustering eps: 0.1
+input shape: (300, 28, 28)
+/home/kento/.pyenv/versions/anaconda-2.1.0/lib/python2.7/site-packages/matplotlib/pyplot.py:423: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_num_figures`).
+  max_open_warning, RuntimeWarning)
+clustering eps: 0.2
+input shape: (300, 28, 28)
+clustering eps: 0.3
+input shape: (300, 28, 28)
+clustering eps: 0.4
+input shape: (300, 28, 28)
+clustering eps: 0.5
+input shape: (300, 28, 28)
+clustering eps: 0.6
+input shape: (300, 28, 28)
+clustering eps: 0.7
+input shape: (300, 28, 28)
+clustering eps: 0.8
+input shape: (300, 28, 28)
+clustering eps: 0.9
+input shape: (300, 28, 28)
+clustering eps: 1.0
+input shape: (300, 28, 28)
+clustering eps: 1.1
+input shape: (300, 28, 28)
+clustering eps: 1.2
+input shape: (300, 28, 28)
+clustering eps: 1.3
+input shape: (300, 28, 28)
+clustering eps: 1.4
+input shape: (300, 28, 28)
+clustering eps: 1.5
+input shape: (300, 28, 28)
+clustering eps: 1.6
+input shape: (300, 28, 28)
+clustering eps: 1.7
+input shape: (300, 28, 28)
+clustering eps: 1.8
+input shape: (300, 28, 28)
+clustering eps: 1.9
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 3136)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist/layer2/compressed.pkl
+create clustering result images
+clustering eps: 0.1
+input shape: (300, 28, 28)
+clustering eps: 0.2
+input shape: (300, 28, 28)
+clustering eps: 0.3
+input shape: (300, 28, 28)
+clustering eps: 0.4
+input shape: (300, 28, 28)
+clustering eps: 0.5
+input shape: (300, 28, 28)
+clustering eps: 0.6
+input shape: (300, 28, 28)
+clustering eps: 0.7
+input shape: (300, 28, 28)
+clustering eps: 0.8
+input shape: (300, 28, 28)
+clustering eps: 0.9
+input shape: (300, 28, 28)
+clustering eps: 1.0
+input shape: (300, 28, 28)
+clustering eps: 1.1
+input shape: (300, 28, 28)
+clustering eps: 1.2
+input shape: (300, 28, 28)
+clustering eps: 1.3
+input shape: (300, 28, 28)
+clustering eps: 1.4
+input shape: (300, 28, 28)
+clustering eps: 1.5
+input shape: (300, 28, 28)
+clustering eps: 1.6
+input shape: (300, 28, 28)
+clustering eps: 1.7
+input shape: (300, 28, 28)
+clustering eps: 1.8
+input shape: (300, 28, 28)
+clustering eps: 1.9
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 784)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist/layer3/compressed.pkl
+create clustering result images
+clustering eps: 0.1
+input shape: (300, 28, 28)
+clustering eps: 0.2
+input shape: (300, 28, 28)
+clustering eps: 0.3
+input shape: (300, 28, 28)
+clustering eps: 0.4
+input shape: (300, 28, 28)
+clustering eps: 0.5
+input shape: (300, 28, 28)
+clustering eps: 0.6
+input shape: (300, 28, 28)
+clustering eps: 0.7
+input shape: (300, 28, 28)
+clustering eps: 0.8
+input shape: (300, 28, 28)
+clustering eps: 0.9
+input shape: (300, 28, 28)
+clustering eps: 1.0
+input shape: (300, 28, 28)
+clustering eps: 1.1
+input shape: (300, 28, 28)
+clustering eps: 1.2
+input shape: (300, 28, 28)
+clustering eps: 1.3
+input shape: (300, 28, 28)
+clustering eps: 1.4
+input shape: (300, 28, 28)
+clustering eps: 1.5
+input shape: (300, 28, 28)
+clustering eps: 1.6
+input shape: (300, 28, 28)
+clustering eps: 1.7
+input shape: (300, 28, 28)
+clustering eps: 1.8
+input shape: (300, 28, 28)
+clustering eps: 1.9
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 400)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist/layer4/compressed.pkl
+create clustering result images
+clustering eps: 0.1
+input shape: (300, 28, 28)
+clustering eps: 0.2
+input shape: (300, 28, 28)
+clustering eps: 0.3
+input shape: (300, 28, 28)
+clustering eps: 0.4
+input shape: (300, 28, 28)
+clustering eps: 0.5
+input shape: (300, 28, 28)
+clustering eps: 0.6
+input shape: (300, 28, 28)
+clustering eps: 0.7
+input shape: (300, 28, 28)
+clustering eps: 0.8
+input shape: (300, 28, 28)
+clustering eps: 0.9
+input shape: (300, 28, 28)
+clustering eps: 1.0
+input shape: (300, 28, 28)
+clustering eps: 1.1
+input shape: (300, 28, 28)
+clustering eps: 1.2
+input shape: (300, 28, 28)
+clustering eps: 1.3
+input shape: (300, 28, 28)
+clustering eps: 1.4
+input shape: (300, 28, 28)
+clustering eps: 1.5
+input shape: (300, 28, 28)
+clustering eps: 1.6
+input shape: (300, 28, 28)
+clustering eps: 1.7
+input shape: (300, 28, 28)
+clustering eps: 1.8
+input shape: (300, 28, 28)
+clustering eps: 1.9
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 100)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist/layer5/compressed.pkl
+create clustering result images
+clustering eps: 0.1
+input shape: (300, 28, 28)
+clustering eps: 0.2
+input shape: (300, 28, 28)
+clustering eps: 0.3
+input shape: (300, 28, 28)
+clustering eps: 0.4
+input shape: (300, 28, 28)
+clustering eps: 0.5
+input shape: (300, 28, 28)
+clustering eps: 0.6
+input shape: (300, 28, 28)
+clustering eps: 0.7
+input shape: (300, 28, 28)
+clustering eps: 0.8
+input shape: (300, 28, 28)
+clustering eps: 0.9
+input shape: (300, 28, 28)
+clustering eps: 1.0
+input shape: (300, 28, 28)
+clustering eps: 1.1
+input shape: (300, 28, 28)
+clustering eps: 1.2
+input shape: (300, 28, 28)
+clustering eps: 1.3
+input shape: (300, 28, 28)
+clustering eps: 1.4
+input shape: (300, 28, 28)
+clustering eps: 1.5
+input shape: (300, 28, 28)
+clustering eps: 1.6
+input shape: (300, 28, 28)
+clustering eps: 1.7
+input shape: (300, 28, 28)
+clustering eps: 1.8
+input shape: (300, 28, 28)
+clustering eps: 1.9
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 10)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+calculate clustering score
+visualize layers
+layer0 (3136, 784)
+layer1 (3136, 3136)
+layer2 (784, 3136)
+layer3 (400, 784)
+layer4 (100, 400)
+layer5 (10, 100)
+experiment case done!

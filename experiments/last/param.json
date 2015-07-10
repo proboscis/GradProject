@@ -1,0 +1,1 @@
+{"dst": "../models/newsda3.pkl", "model": {"kind": "sda", "visualize": false, "nIn": 2352, "batchSize": 20, "corruptionLevels": [0, 0, 0, 0, 0, 0], "hiddenLayerSizes": [9408, 9408, 2352, 1200, 300, 75], "preLearningRates": [1, 1, 1, 1, 0.1, 0.1], "randomSeed": 1234, "nOut": 75}, "dataSet": {"path": "../resized/28x28", "kind": "ebook", "shape": [28, 28, 3], "numData": 40000}}

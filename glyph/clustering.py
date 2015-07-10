@@ -39,9 +39,9 @@ def applyKMeans(data):
     labels = kmeans.labels_
     return labels
 
-def applyDBSCAN(data):
+def applyDBSCAN(data,eps = 0.5):
     from sklearn.cluster import DBSCAN
-    dbscan = DBSCAN()
+    dbscan = DBSCAN(eps = eps)
     dbscan.fit(data)
     return dbscan.labels_
 

@@ -1,0 +1,2 @@
+#!/bin/bash
+unbuffer ./experiment.py $1 $2 $3 | tee "$2/log.txt"

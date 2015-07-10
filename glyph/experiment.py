@@ -48,6 +48,9 @@ def experimentCase(paramPath,resultPath,useCache = True):
     print "useCache:",useCache
     print "load param"
     info = json.loads(util.fileString(paramPath))
+    util.ensurePathExists(resultPath+"/param.json")
+    with open(resultPath+"/param.json","w") as f:
+        json.dump(info,f)
     print "create model"
     print (info)
     info,model = train.evalModel(info,useCache)
@@ -64,18 +67,35 @@ def experimentCase(paramPath,resultPath,useCache = True):
         compressed = util.loadOrCall(resultPath+"/layer"+layer+"/compressed.pkl",lambda :compressor(x),force=not useCache)
         print "create clustering result images"
     #clustering.showInputImageAndClass(x,compressed,clustering.applyDBSCAN,info["dataSet"]["shape"],dstFolder=resultPath+"/clusters")
-        labels = clustering.applyDBSCAN(compressed)
-        images = x.reshape((numClustering,)+tuple(info["dataSet"]["shape"]))
-        clusterImages = visualize.genClusterFigures(images,labels)
-        for i,fig in enumerate(clusterImages):
-            fig.savefig(resultPath +"/layer"+layer+ "/cluster"+str(i))
+
+        #estimate eps from knn
+        from sklearn.neighbors import NearestNeighbors
+        def knn():
+            nbrs = NearestNeighbors(n_neighbors=2,algorithm='ball_tree').fit(compressed)
+            return nbrs.kneighbors(compressed)
+        dist,indices = util.loadOrCall(resultPath+"/layer"+layer+"/nn.pkl",knn,force = not useCache)
+        dist = numpy.swapaxes(dist,0,1)
+        avgDist =  numpy.mean(dist[1])
+        avgDist = max(0,avgDist)
+        print "average dist:" ,avgDist
+        for eps in numpy.arange(avgDist/3,avgDist*2,avgDist/3):
+            print "clustering eps:",eps
+            labels = clustering.applyDBSCAN(compressed,eps)
+            images = x.reshape((numClustering,)+tuple(info["dataSet"]["shape"]))
+            clusterImages = visualize.genClusterFigures(images,labels)
+            level = ("%.3f" % eps).replace(".","_")
+            for i,fig in enumerate(clusterImages):
+                dirName = resultPath +"/layer"+layer+"/"+level+ "/cluster"+str(i)
+                util.ensurePathExists(dirName)
+                fig.savefig(dirName)
         print "create mds distribution image"
         print "image shape",images.shape
         print "x shape",x.shape
         print "compressed shape", compressed.shape
-        for eps in range(0.1,1,0.1):
-            mdsFig = visualize.MDSPlots(images,compressed,eps)
-            mdsFig.savefig(resultPath+"/layer"+layer+("/mds%.1f" % eps))
+        mdsFig = visualize.MDSPlots(images,compressed)
+        figPath = resultPath+"/layer"+layer+"/mds"
+        util.ensurePathExists(figPath)
+        mdsFig.savefig(figPath)
     #clustering.saveMDSPlots(resultPath+"/mds.png", compressed)
     print "calculate clustering score"
     #score = metrics.silhouette_score(compressed, clustering.applyDBSCAN(compressed), metric='euclidean')

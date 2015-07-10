@@ -1,0 +1,224 @@
+Using gpu device 0: GeForce GTX TITAN Black
+experiment param: ../params/newsda_mnist2.json
+experiment result: ../experiments/last_mnist_2
+useCache: True
+load param
+create model
+{u'dst': u'../models/mnist/latestsda.pkl', u'model': {u'kind': u'sda', u'visualize': False, u'nIn': 784, u'batchSize': 500, u'corruptionLevels': [0, 0, 0, 0, 0, 0], u'hiddenLayerSizes': [3136, 3136, 784, 400, 100, 10], u'preLearningRates': [0.1, 0.1, 0.01, 0.01, 0.001, 0.001], u'randomSeed': 1234, u'pretrainingEpochs': [100, 100, 100, 100, 100, 100], u'nOut': 10}, u'dataSet': {u'path': u'../data/mnist/28x28', u'kind': u'mnist', u'shape': [28, 28], u'numData': 120000}}
+evalModel cache: True
+loading cache: ../models/mnist/latestsda.pkl
+loading file:../models/mnist/latestsda.pkl
+done.
+done.
+({u'dst': u'../models/mnist/latestsda.pkl', u'model': {u'kind': u'sda', u'visualize': False, u'nIn': 784, u'batchSize': 500, u'corruptionLevels': [0, 0, 0, 0, 0, 0], u'hiddenLayerSizes': [3136, 3136, 784, 400, 100, 10], u'preLearningRates': [0.1, 0.1, 0.01, 0.01, 0.001, 0.001], u'randomSeed': 1234, u'pretrainingEpochs': [100, 100, 100, 100, 100, 100], u'nOut': 10}, u'dataSet': {u'path': u'../data/mnist/28x28', u'kind': u'mnist', u'shape': [28, 28], u'numData': 120000}}, <sda.StackedDenoisingAutoencoder instance at 0x7fc8703a9c68>)
+load dataset
+loading cache: ../experiments/last_mnist_2/x.pkl
+loading file:../experiments/last_mnist_2/x.pkl
+done.
+done.
+create compressor
+compressing input shape: (300, 784)
+genCompressor(sda),sda.x.shape =  Shape.0
+loading cache: ../experiments/last_mnist_2/layer0/compressed.pkl
+loading file:../experiments/last_mnist_2/layer0/compressed.pkl
+done.
+done.
+create clustering result images
+loading cache: ../experiments/last_mnist_2/layer0/nn.pkl
+loading file:../experiments/last_mnist_2/layer0/nn.pkl
+done.
+done.
+average dist: 6.7247734943
+clustering eps: 0.67247734943
+input shape: (300, 28, 28)
+clustering eps: 1.34495469886
+input shape: (300, 28, 28)
+clustering eps: 2.01743204829
+input shape: (300, 28, 28)
+clustering eps: 2.68990939772
+input shape: (300, 28, 28)
+clustering eps: 3.36238674715
+input shape: (300, 28, 28)
+clustering eps: 4.03486409658
+input shape: (300, 28, 28)
+clustering eps: 4.70734144601
+input shape: (300, 28, 28)
+clustering eps: 5.37981879544
+input shape: (300, 28, 28)
+clustering eps: 6.05229614487
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 3136)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+loading cache: ../experiments/last_mnist_2/layer1/compressed.pkl
+loading file:../experiments/last_mnist_2/layer1/compressed.pkl
+done.
+done.
+create clustering result images
+loading cache: ../experiments/last_mnist_2/layer1/nn.pkl
+loading file:../experiments/last_mnist_2/layer1/nn.pkl
+done.
+done.
+average dist: 4.96804579567
+clustering eps: 0.496804579567
+input shape: (300, 28, 28)
+clustering eps: 0.993609159134
+input shape: (300, 28, 28)
+clustering eps: 1.4904137387
+input shape: (300, 28, 28)
+clustering eps: 1.98721831827
+input shape: (300, 28, 28)
+clustering eps: 2.48402289784
+input shape: (300, 28, 28)
+clustering eps: 2.9808274774
+input shape: (300, 28, 28)
+/home/kento/.pyenv/versions/anaconda-2.1.0/lib/python2.7/site-packages/matplotlib/pyplot.py:423: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_num_figures`).
+  max_open_warning, RuntimeWarning)
+clustering eps: 3.47763205697
+input shape: (300, 28, 28)
+clustering eps: 3.97443663654
+input shape: (300, 28, 28)
+clustering eps: 4.47124121611
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 3136)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist_2/layer2/compressed.pkl
+create clustering result images
+saved cache: ../experiments/last_mnist_2/layer2/nn.pkl
+average dist: 4.74187658028
+clustering eps: 0.474187658028
+input shape: (300, 28, 28)
+clustering eps: 0.948375316056
+input shape: (300, 28, 28)
+clustering eps: 1.42256297408
+input shape: (300, 28, 28)
+clustering eps: 1.89675063211
+input shape: (300, 28, 28)
+clustering eps: 2.37093829014
+input shape: (300, 28, 28)
+clustering eps: 2.84512594817
+input shape: (300, 28, 28)
+clustering eps: 3.3193136062
+input shape: (300, 28, 28)
+clustering eps: 3.79350126422
+input shape: (300, 28, 28)
+clustering eps: 4.26768892225
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 784)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist_2/layer3/compressed.pkl
+create clustering result images
+saved cache: ../experiments/last_mnist_2/layer3/nn.pkl
+average dist: 3.86254700867
+clustering eps: 0.386254700867
+input shape: (300, 28, 28)
+clustering eps: 0.772509401734
+input shape: (300, 28, 28)
+clustering eps: 1.1587641026
+input shape: (300, 28, 28)
+clustering eps: 1.54501880347
+input shape: (300, 28, 28)
+clustering eps: 1.93127350433
+input shape: (300, 28, 28)
+clustering eps: 2.3175282052
+input shape: (300, 28, 28)
+clustering eps: 2.70378290607
+input shape: (300, 28, 28)
+clustering eps: 3.09003760693
+input shape: (300, 28, 28)
+clustering eps: 3.4762923078
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 400)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist_2/layer4/compressed.pkl
+create clustering result images
+saved cache: ../experiments/last_mnist_2/layer4/nn.pkl
+average dist: 1.87659902931
+clustering eps: 0.187659902931
+input shape: (300, 28, 28)
+clustering eps: 0.375319805863
+input shape: (300, 28, 28)
+clustering eps: 0.562979708794
+input shape: (300, 28, 28)
+clustering eps: 0.750639611726
+input shape: (300, 28, 28)
+clustering eps: 0.938299514657
+input shape: (300, 28, 28)
+clustering eps: 1.12595941759
+input shape: (300, 28, 28)
+clustering eps: 1.31361932052
+input shape: (300, 28, 28)
+clustering eps: 1.50127922345
+input shape: (300, 28, 28)
+clustering eps: 1.68893912638
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 100)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+saved cache: ../experiments/last_mnist_2/layer5/compressed.pkl
+create clustering result images
+saved cache: ../experiments/last_mnist_2/layer5/nn.pkl
+average dist: 0.251273897274
+clustering eps: 0.0251273897274
+input shape: (300, 28, 28)
+clustering eps: 0.0502547794547
+input shape: (300, 28, 28)
+clustering eps: 0.0753821691821
+input shape: (300, 28, 28)
+clustering eps: 0.100509558909
+input shape: (300, 28, 28)
+clustering eps: 0.125636948637
+input shape: (300, 28, 28)
+clustering eps: 0.150764338364
+input shape: (300, 28, 28)
+clustering eps: 0.175891728091
+input shape: (300, 28, 28)
+clustering eps: 0.201019117819
+input shape: (300, 28, 28)
+clustering eps: 0.226146507546
+input shape: (300, 28, 28)
+create mds distribution image
+image shape (300, 28, 28)
+x shape (300, 784)
+compressed shape (300, 10)
+calculating similarities
+fitting mds
+create figure
+imageScatter: (300, 28, 28)
+calculate clustering score
+visualize layers
+layer0 (3136, 784)
+layer1 (3136, 3136)
+layer2 (784, 3136)
+layer3 (400, 784)
+layer4 (100, 400)
+layer5 (10, 100)
+experiment case done!
